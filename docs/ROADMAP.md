@@ -1,5 +1,9 @@
 # Architect OS Roadmap
 
+Approved roadmap closure: **COMPLETE through M7** (2026-09-15), with M2.4 and
+optional NotebookLM/handoff explicitly deferred. A3 ends at this existing roadmap;
+human product review is required before any new scope. See `docs/STATUS.md`.
+
 ## M0 — Foundation
 
 Deliver the repository contract, architecture/product/roadmap documentation, package metadata, SQLite projects/runs/events storage, CLI foundation, `architect init`, tests, and documentation. Exit criteria: `architect init`, `architect run`, and `architect status` work; tests pass; architecture is documented.
@@ -10,7 +14,7 @@ Deliver the repository contract, architecture/product/roadmap documentation, pac
 
 Define the provider-independent normalized event contract before provider integrations.
 
-**Status:** COMPLETE. Implementation includes normalized events, atomic lifecycle recording, deterministic timelines, and `architect inspect` with full ID or unique prefix lookup. M0 regressions and M1 tests pass; isolated CLI validation succeeded. Do not begin M2 automatically.
+**Status:** COMPLETE. Implementation includes normalized events, atomic lifecycle recording, deterministic timelines, and `architect inspect` with full ID or unique prefix lookup. M0 regressions and M1 tests pass; isolated CLI validation succeeded. The historical M1 boundary has been superseded by subsequent approvals.
 
 ## M2 — Observer Integration
 
@@ -169,4 +173,16 @@ by installation. Full regression and canonical docs pass.
 
 Build a failure corpus, controlled scenarios, hidden failures, success criteria, and progress tracking.
 
-Do not implement M1–M7 during M0.
+**Status:** COMPLETE — evidence in `docs/milestones/M7.md`.
+
+Exit criteria: a small versioned failure corpus provides at least two controlled
+Python scenarios with learner instructions, faulty fixtures and deterministic
+acceptance checks kept outside the learner workspace. Explicit list/start/check/
+progress commands create independent attempts without modifying project sources.
+Checks evaluate a pinned copy of learner files with bounded subprocess execution;
+local receipts preserve scenario/check/input hashes, outcome and attempt history.
+Progress reports last evaluated evidence and whether current files still match,
+never inferred mastery. Real filesystem/subprocess/CLI tests demonstrate initial
+failure, successful repair, repeat checks, isolation and stale progress. Package
+the corpus with the CLI; no agent orchestration, external service, new SQLite
+schema or pedagogical intelligence. Full regression and canonical docs pass.

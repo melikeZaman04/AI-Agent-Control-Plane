@@ -112,3 +112,17 @@ exit and optional substring (stdout at most 1 MiB). A successfully recorded suit
 exits zero even when trials fail; inspect each `passed` value. Comparison keeps
 distinct suite/source/case/agent/model/strategy groups; elapsed time is measured,
 not deterministic, and synthetic smoke results are not real model benchmarks.
+
+### Controlled learning labs (M7)
+
+```sh
+architect lab list
+architect lab start retry
+architect lab check <lab-id>
+architect lab progress <lab-id>
+```
+
+Edit the returned workspace to repair the exercise. Checks use real temporary
+copies and record explicit pass/failure evidence; progress flags subsequent edits.
+The bundled `retry` and `cache` scenarios run trusted local Python, with user
+permissions. See [Labs](labs/README.md) for contracts and limits.

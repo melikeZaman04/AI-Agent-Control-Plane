@@ -22,6 +22,7 @@ architect = "architect.cli.main:app"
 
 [tool.setuptools.package-data]
 "architect.storage" = ["schema.sql"]
+"architect" = ["lab_corpus/*/scenario.json", "lab_corpus/*/evaluator.py", "lab_corpus/*/workspace/*.py"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

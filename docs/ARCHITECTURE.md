@@ -310,12 +310,12 @@ models. Acceptance evidence: [milestones/M5.md](milestones/M5.md).
 | Storage | IN PROGRESS |
 | Flight Recorder Core | COMPLETE |
 | Observer Adapters | FOUNDATION, LIVE CLAUDE AND LIVE CODEX COMPLETE; PASSIVE PLANNED |
-| Project Chronicle | M3 COMPLETE; M4 NOT STARTED |
+| Project Chronicle | M3 COMPLETE |
 | Session Intelligence | M4 COMPLETE |
 | Context Economy | M5 COMPLETE |
 | NotebookLM Provider | PLANNED |
-| Benchmark | PLANNED |
-| LEARN Labs | PLANNED |
+| Benchmark | M6 COMPLETE |
+| LEARN Labs | M7 COMPLETE |
 
 ## M6 explicit benchmark runtime (COMPLETE)
 
@@ -336,3 +336,22 @@ Output spools are temporary; evaluation/usage parsing is limited to 1 MiB, but d
 spool growth is not bounded independently of the timeout. Escaped process groups
 are outside this trusted-command contract. JSON receipts are atomic local files
 under .architect/benchmarks; SQLite and observer paths remain unchanged.
+
+## M7 LEARN Labs (COMPLETE)
+
+A packaged versioned corpus supplies two deterministic failure scenarios (retry
+idempotence and stale cache), learner fixtures, instructions and acceptance
+checks. Explicit list/start/check/progress commands use local .architect/labs
+sessions. Each session copies its checker and records its SHA-256; modifications
+are rejected. Checks execute temporary snapshots of learner files with the M6
+POSIX subprocess timeout helper. They do not invoke native agents. Hidden checks
+are outside the learner workspace, not adversarial secrets.
+
+Atomic JSON attempt receipts contain scenario/check/input hashes and observed
+execution outcomes; no SQLite schema, provider event, dependency or scheduler is
+added. Per-session file locks serialize concurrent checks and progress. Read-only
+progress derives attempt order and last outcome from receipts; source-match and
+checker-match flags distinguish present files from historical acceptance. Each
+explicit check is a new observation; repeated progress queries are deterministic.
+No pedagogical narrative or mastery claim is inferred. Trusted Python retains
+user permissions; source snapshots provide repeatability, not a sandbox.

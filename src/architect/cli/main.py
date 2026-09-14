@@ -344,6 +344,30 @@ def context_command(
     typer.echo(output)
 
 
+@app.command("lab")
+def lab_command(
+    action: str = typer.Argument(..., help="list, start, check, or progress."),
+    identifier: str | None = typer.Argument(None, help="Scenario ID for start; lab ID for check/progress."),
+) -> None:
+    """Explicit LEARN scenarios and evidence-backed progress."""
+    from architect.labs import Labs, catalog
+    try:
+        if action == "list":
+            if identifier is not None:
+                raise ValueError("list takes no identifier")
+            result = catalog()
+        else:
+            if action not in ("start", "check", "progress") or identifier is None:
+                raise ValueError("Use start <scenario> or check/progress <lab-id>")
+            root, _, _ = _registered_project()
+            labs = Labs(root)
+            result = getattr(labs, action)(identifier)
+        typer.echo(json.dumps(result, sort_keys=True, ensure_ascii=True))
+    except (OSError, ValueError, TypeError, KeyError, sqlite3.Error) as error:
+        typer.echo(f"Lab failed: {error}", err=True)
+        raise typer.Exit(code=1) from error
+
+
 @app.command("benchmark")
 def benchmark_command(
     action: str = typer.Argument(..., help="run or compare"),

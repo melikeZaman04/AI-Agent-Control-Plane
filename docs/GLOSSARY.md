@@ -160,3 +160,10 @@ replace current Git/source evidence.
   argv, bounded repetitions/timeouts and deterministic exit/output predicates.
 - **Benchmark receipt:** Observed trial metrics and hashes, not a claim of model
   quality. Token usage is command-reported; context token counts are estimates.
+
+- **Lab scenario:** Versioned LEARN instructions, faulty source fixture and
+  deterministic success criteria, separate from real BUILD work.
+- **Hidden lab check:** Acceptance code withheld from the initial learner workspace;
+  inspectable in the corpus, not a security secret.
+- **Lab progress:** Ordered explicit check receipts and current-source match flags;
+  historical success does not establish current correctness or learner mastery.

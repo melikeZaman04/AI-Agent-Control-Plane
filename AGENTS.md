@@ -16,8 +16,9 @@ Do not mix these responsibilities without an explicit reason.
 
 ## Current Milestone
 
-M0 through M2.3b and M3–M6 are complete. Continue the existing M7 roadmap under
-A3; M2.4 remains deferred. Live observation remains explicit and foreground.
+M0 through M2.3b and M3–M7 are complete. The approved A3 roadmap boundary is
+exhausted; stop for human product review before new scope. M2.4, optional NotebookLM
+and handoff remain deferred. Live observation remains explicit and foreground.
 
 ## Roadmap Execution
 
