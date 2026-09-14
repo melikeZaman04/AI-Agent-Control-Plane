@@ -13,3 +13,6 @@ M3 tarihsel kabul: [milestones/M3.md](milestones/M3.md).
 
 M5 doğrulaması: **226 passed in 1.92s**. Bağımsız incelemede bulunan eski Git
 üyeliği sorunu giderildi; tekrar inceleme PASS. Kanıt: [milestones/M5.md](milestones/M5.md).
+
+M6 tamamlandı: **233 passed in 2.44s**. Kanıt: [milestones/M6.md](milestones/M6.md).
+Sıradaki mevcut kapsam M7 Labs; A3 altında otomatik devam edilir.

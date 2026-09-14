@@ -316,3 +316,23 @@ models. Acceptance evidence: [milestones/M5.md](milestones/M5.md).
 | NotebookLM Provider | PLANNED |
 | Benchmark | PLANNED |
 | LEARN Labs | PLANNED |
+
+## M6 explicit benchmark runtime (COMPLETE)
+
+RESEARCH uses version-1 JSON suites and explicit argv subprocesses. Each trial gets
+a fresh regular-file Git archive of clean tracked HEAD, without .git or untracked
+files. Context none/bootstrap uses M5 and checks source hashes against that archive.
+Suite hashes, source archive hashes, case identity and declared agent/model labels
+preserve comparison boundaries; duplicate receipts are rejected. Results store
+exit/timeout, elapsed seconds, output sizes/hashes, predicate success, context
+characters/estimated tokens and optional command-reported usage. Missing usage is
+unknown. No raw argv, output or prompt is stored in receipts.
+
+This POSIX runner executes trusted commands with inherited user permissions and
+environment: temporary working directories are not security sandboxes. Commands
+can use absolute paths/network; native agent permissions still belong to the agent.
+Timeouts kill the process group, including descendants on normal completion.
+Output spools are temporary; evaluation/usage parsing is limited to 1 MiB, but disk
+spool growth is not bounded independently of the timeout. Escaped process groups
+are outside this trusted-command contract. JSON receipts are atomic local files
+under .architect/benchmarks; SQLite and observer paths remain unchanged.

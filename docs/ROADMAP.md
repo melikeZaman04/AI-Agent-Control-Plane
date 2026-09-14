@@ -150,6 +150,21 @@ and canonical docs pass. NotebookLM and external retrieval remain optional/defer
 
 Build evaluation suites, repeatable runs, model and context-strategy comparisons, and token/context metrics.
 
+**Status:** COMPLETE — evidence in `docs/milestones/M6.md`.
+
+Exit criteria: an explicit local JSON suite defines bounded repeated argv commands,
+agent/model labels, expected exit/output checks and context strategy (none or M5
+bootstrap). The runner executes real subprocesses with timeouts, records per-trial
+outcomes/timing/output hashes plus context metrics and optional generic
+command-reported token usage, and stores local JSON receipts. Raw commands,
+prompts and command output are not persisted in receipts. Comparison groups
+results by case/agent/model/context strategy and reports success rates and observed
+metrics without claiming model quality from synthetic fixtures. Validate manifests
+before execution, preserve source suite/context hashes, test repeatability,
+timeouts, failures, metrics and real CLI paths. No external model account is
+required; actual provider commands are user-selected, never inferred or launched
+by installation. Full regression and canonical docs pass.
+
 ## M7 — Learn / Labs
 
 Build a failure corpus, controlled scenarios, hidden failures, success criteria, and progress tracking.

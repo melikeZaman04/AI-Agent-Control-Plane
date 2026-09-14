@@ -344,6 +344,28 @@ def context_command(
     typer.echo(output)
 
 
+@app.command("benchmark")
+def benchmark_command(
+    action: str = typer.Argument(..., help="run or compare"),
+    files: list[Path] = typer.Argument(..., help="One suite for run, or result receipt files for compare."),
+) -> None:
+    """Run explicitly supplied local evaluation commands or compare saved receipts."""
+    from architect.benchmark import run_suite, compare
+    if action not in {"run", "compare"} or (action == "run" and len(files) != 1):
+        raise typer.BadParameter("Use run with one suite, or compare with saved receipts")
+    try:
+        if action == "run":
+            root, _, _ = _registered_project()
+            result=run_suite(root,files[0])
+        else:
+            result=compare([json.loads(path.read_text()) for path in files])
+        output=json.dumps(result,sort_keys=True,ensure_ascii=True,separators=(",", ":"))
+    except (OSError, ValueError, TypeError, KeyError, sqlite3.Error) as error:
+        typer.echo(f"Benchmark failed: {error}",err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(output)
+
+
 @app.command("ingest")
 def ingest_command(provider: str = typer.Argument(..., help="Hook provider (claude).")) -> None:
     """Consume one live hook JSON object from stdin; successful ingestion is quiet."""

@@ -155,3 +155,8 @@ Token estimates are labeled approximations, never reported provider usage.
 A source interface for targeted search and exact evidence-linked reads. The local
 repository implementation is authoritative; optional external sources cannot
 replace current Git/source evidence.
+
+- **Benchmark suite:** Explicit RESEARCH cases with declared agent/model labels,
+  argv, bounded repetitions/timeouts and deterministic exit/output predicates.
+- **Benchmark receipt:** Observed trial metrics and hashes, not a claim of model
+  quality. Token usage is command-reported; context token counts are estimates.

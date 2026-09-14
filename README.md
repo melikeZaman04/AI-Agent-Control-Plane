@@ -83,3 +83,32 @@ Only regular tracked UTF-8 source files up to 1 MiB are indexed; newly staged fi
 qualify, untracked files do not. Reads reject stale content or removed Git index
 membership. Index metadata stays in `.architect`; full file bodies remain in the
 repository. Bootstrap budgets/estimates count source text only and disclose omissions.
+
+### Local research benchmarks (M6)
+
+Run only trusted commands: the POSIX runner provides fresh Git workspaces, not a
+security sandbox. Initialize the project and commit tracked changes first.
+Create a suite JSON, for example:
+
+```json
+{"version":1,"cases":[{"id":"smoke","task":"local-smoke","agent":"fixture",
+"model":"python","argv":["python3","-c","print('OK')"],"repeats":2,
+"timeout_seconds":10,"expected_exit":0,"stdout_contains":"OK",
+"context":{"strategy":"none"}}]}
+```
+
+```sh
+architect benchmark run suite.json
+architect benchmark compare .architect/benchmarks/<receipt-id>.json
+```
+
+Use context strategy `bootstrap` with optional `query` and `max_chars`;
+argv placeholder `{context_file}` receives a temporary JSON bundle path.
+Each repetition uses the same pinned committed regular-file snapshot. Keep the
+original suite to resolve its recorded hash. Agent/model labels are declarations.
+Optional stdout JSON `{"usage":{"input_tokens":11,"output_tokens":3}}` supplies
+command-reported counts; absent counts stay unknown. Predicates check expected
+exit and optional substring (stdout at most 1 MiB). A successfully recorded suite
+exits zero even when trials fail; inspect each `passed` value. Comparison keeps
+distinct suite/source/case/agent/model/strategy groups; elapsed time is measured,
+not deterministic, and synthetic smoke results are not real model benchmarks.
