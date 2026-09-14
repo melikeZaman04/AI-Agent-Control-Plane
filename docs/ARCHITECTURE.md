@@ -80,6 +80,14 @@ to run completion. Setup and detailed live semantics are canonical in
 [`integrations/claude.md`](integrations/claude.md). No recorder or schema changes were
 needed for live mode.
 
+M2.3a adds `CodexObserver` behind the same Observer protocol. It accepts only a
+narrow synthetic OTel-style record and maps documented tool-result and
+tool-decision families to the existing ArchitectEvent vocabulary. Codex-specific
+attributes remain metadata, sensitive content fields are omitted, and
+FlightRecorder has no Codex dependency. `conversation.id` uses the existing
+provider-session binding under the `codex` namespace. Live OTLP transport remains
+an M2.3b decision documented in [`integrations/codex.md`](integrations/codex.md).
+
 - NATIVE — provider-supported hooks or telemetry.
 - SESSION_LOG — provider-local transcripts or session files.
 - PASSIVE — Git, filesystem, and process output observations.

@@ -16,7 +16,7 @@ Do not mix these responsibilities without an explicit reason.
 
 ## Current Milestone
 
-M0, M1, M2.1, and M2.2 are complete. Consult `docs/ROADMAP.md` for development order and `docs/integrations/claude.md` for live smoke-test evidence. Do not start M2.3 automatically.
+M0, M1, M2.1, M2.2, and M2.3a are complete. Consult `docs/ROADMAP.md` and `docs/integrations/codex.md`. Do not start live Codex transport automatically.
 
 Do not implement global Claude hook installation, Codex telemetry ingestion, NotebookLM, Repo Map, Context Compiler, Chronicle intelligence, benchmark engine, labs runtime, multi-agent orchestration, or a web UI yet. See `docs/ROADMAP.md`.
 

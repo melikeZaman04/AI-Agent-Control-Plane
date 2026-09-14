@@ -20,7 +20,8 @@ Add Claude, Codex, and passive observers that translate provider evidence into n
 
 - M2.1 Observer Foundation — COMPLETE: synthetic Claude normalization, session/run bindings, synchronous ingest, and isolated pipeline tests.
 - M2.2 Live Claude Integration — COMPLETE: stdin CLI, live-format normalization, opt-in hook template and automated tests implemented. User-performed live smoke test confirmed FILE_READ and TEST_EXECUTION in Architect inspect; see `docs/integrations/claude.md` for evidence.
-- M2.3 Codex Integration — PLANNED.
+- M2.3a Codex Observer Foundation — COMPLETE: synthetic OTel-style normalization, Codex session/run correlation, privacy filtering, end-to-end SQLite inspection, and transport design. Live transport is not included; see `docs/integrations/codex.md`.
+- M2.3b Live Codex Transport — PLANNED: validate the native OTLP envelope and implement the approved receiver option.
 - M2.4 Passive Observer — LATER, if still justified.
 
 M2.2 installation is explicit and project-local. Do not start M2.3 automatically.
