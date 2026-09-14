@@ -1,0 +1,7 @@
+{
+  "hooks": {
+    "SessionStart": [{"hooks": [{"type": "command", "command": "cd \"$CLAUDE_PROJECT_DIR\" && \"${ARCHITECT_EXECUTABLE:?Export ARCHITECT_EXECUTABLE}\" ingest claude", "timeout": 10}]}],
+    "PostToolUse": [{"matcher": "Read|Bash", "hooks": [{"type": "command", "command": "cd \"$CLAUDE_PROJECT_DIR\" && \"${ARCHITECT_EXECUTABLE:?Export ARCHITECT_EXECUTABLE}\" ingest claude", "timeout": 10}]}],
+    "PostToolUseFailure": [{"hooks": [{"type": "command", "command": "cd \"$CLAUDE_PROJECT_DIR\" && \"${ARCHITECT_EXECUTABLE:?Export ARCHITECT_EXECUTABLE}\" ingest claude", "timeout": 10}]}]
+  }
+}

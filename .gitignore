@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.coverage
+
+.architect/*.db
+.architect/*.db-shm
+.architect/*.db-wal
+.architect/traces/
