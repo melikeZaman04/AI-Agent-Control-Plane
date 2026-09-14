@@ -132,6 +132,20 @@ outputs, boundaries and absent evidence; full regression and docs must pass.
 
 Build bootstrap memory, Git HEAD tracking, incremental indexing, a repo map, targeted retrieval, context metrics, and a knowledge-provider boundary. NotebookLM remains optional; the repository remains ground truth.
 
+**Status:** COMPLETE — evidence in `docs/milestones/M5.md`.
+
+Conservative exit criteria: an explicit local index tracks Git HEAD and tracked
+working-tree content hashes; reuses unchanged symbol analysis and removes deleted
+entries. A deterministic repo map, keyword-ranked path/symbol retrieval and exact
+line-range reads retain source hashes. Bootstrap context combines canonical entry
+files and selected source snippets under an explicit character budget; omitted
+content and token-estimation limits are reported. Stale sources are refreshed or
+rejected, never silently returned. A small local knowledge-provider protocol
+allows future optional sources without replacing Git. Cache only metadata in
+`.architect`, never raw prompts or full source bodies. Real repository tests cover
+updates/deletions, symlinks, stale reads, budgets and repeatability; full regression
+and canonical docs pass. NotebookLM and external retrieval remain optional/deferred.
+
 ## M6 — Research / Benchmark
 
 Build evaluation suites, repeatable runs, model and context-strategy comparisons, and token/context metrics.

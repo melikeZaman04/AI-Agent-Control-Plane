@@ -308,6 +308,42 @@ def session_command(
     typer.echo(output)
 
 
+@app.command("context")
+def context_command(
+    action: str = typer.Argument(..., help="index, map, search, read, or bootstrap"),
+    query: str = typer.Option("", "--query"),
+    path: str | None = typer.Option(None, "--path"),
+    start: int = typer.Option(1, "--start", min=1),
+    end: int | None = typer.Option(None, "--end", min=1),
+    limit: int = typer.Option(5, "--limit", min=1),
+    max_chars: int = typer.Option(12000, "--max-chars", min=1),
+) -> None:
+    """Build local source metadata and retrieve provenance-linked context as JSON."""
+    from architect.context import LocalContext
+    if action not in {"index", "map", "search", "read", "bootstrap"}:
+        raise typer.BadParameter("Unknown context action")
+    if (action == "read") != (path is not None):
+        raise typer.BadParameter("--path is required only for read")
+    try:
+        root, _, _ = _registered_project()
+        provider = LocalContext(root)
+        if action == "index":
+            result = provider.refresh()
+        elif action == "map":
+            result = provider.repo_map()
+        elif action == "search":
+            result = provider.search(query, limit=limit)
+        elif action == "read":
+            result = provider.read(path, start=start, end=end)
+        else:
+            result = provider.bootstrap(query, max_chars=max_chars, limit=limit)
+        output = json.dumps(result, sort_keys=True, ensure_ascii=True, separators=(",", ":"))
+    except (OSError, ValueError, TypeError, KeyError, sqlite3.Error) as error:
+        typer.echo(f"Context failed: {error}", err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(output)
+
+
 @app.command("ingest")
 def ingest_command(provider: str = typer.Argument(..., help="Hook provider (claude).")) -> None:
     """Consume one live hook JSON object from stdin; successful ingestion is quiet."""

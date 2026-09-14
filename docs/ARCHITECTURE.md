@@ -273,6 +273,35 @@ past run status is reconstructed from today's status. All source IDs remain in
 the output; error cases emit stderr without partial JSON. LLM narratives and
 handoff are deferred. Evidence: [milestones/M4.md](milestones/M4.md).
 
+## M5 — Local Context Economy
+
+`LocalContext(root)` implements the small `KnowledgeProvider` search/read protocol.
+Explicit refresh enumerates Git stage-0 tracked regular files, hashes current
+working-tree bytes, reuses unchanged symbol analysis and drops removed entries.
+It tracks HEAD separately from dirty working content. Python symbols use stdlib
+AST; other UTF-8 files remain path-searchable. Parse failures are labeled.
+
+The atomic `.architect/context-index.json` cache contains hashes, sizes, line
+counts, symbols and skip reasons, not full source bodies or prompts. Repo map and
+search refresh first; reads require current tracked regular membership and matching
+hash, then return exact line ranges and hashes. Binary, non-UTF-8, symlink,
+submodule, conflicted and oversized sources are rejected or explicitly excluded.
+Untracked files are excluded; newly staged files qualify. This local tool is not
+an adversarial filesystem sandbox or a retained source snapshot.
+
+Bootstrap reads canonical AGENTS/STATUS/ROADMAP files when indexed, followed by
+keyword-ranked paths/symbols. Its budget covers source-text characters only;
+omitted files and skip reasons are explicit. Estimated tokens are ceil(chars/4),
+not provider tokenizer usage. Metadata wrappers and future prompts are outside
+that estimate. No provider content is sent externally. Optional knowledge sources
+can implement the protocol; NotebookLM remains deferred. Hash validation reads
+tracked file bytes on refresh; incremental savings apply to parsing and selected
+context output, not zero-I/O refresh.
+
+CLI: `architect context index|map|search|read|bootstrap`, with explicit query,
+path/line range and character budget options. Context compilation does not invoke
+models. Acceptance evidence: [milestones/M5.md](milestones/M5.md).
+
 ## Component Status
 
 | Component | Status |
@@ -283,7 +312,7 @@ handoff are deferred. Evidence: [milestones/M4.md](milestones/M4.md).
 | Observer Adapters | FOUNDATION, LIVE CLAUDE AND LIVE CODEX COMPLETE; PASSIVE PLANNED |
 | Project Chronicle | M3 COMPLETE; M4 NOT STARTED |
 | Session Intelligence | M4 COMPLETE |
-| Context Economy | PLANNED |
+| Context Economy | M5 COMPLETE |
 | NotebookLM Provider | PLANNED |
 | Benchmark | PLANNED |
 | LEARN Labs | PLANNED |

@@ -68,3 +68,18 @@ architect session explain --run <full-run-id> --event <event-id> --json
 These commands only read evidence; resume does not launch an agent and explain
 does not invent causes or recommendations. Omit `--run` on resume to select the
 latest recorded start (unknown starts first, full run ID breaks ties).
+
+## Local context (M5)
+
+```bash
+architect context index
+architect context map
+architect context search --query recorder --limit 5
+architect context read --path src/architect/recorder/recorder.py --start 1 --end 20
+architect context bootstrap --query recorder --max-chars 12000
+```
+
+Only regular tracked UTF-8 source files up to 1 MiB are indexed; newly staged files
+qualify, untracked files do not. Reads reject stale content or removed Git index
+membership. Index metadata stays in `.architect`; full file bodies remain in the
+repository. Bootstrap budgets/estimates count source text only and disclose omissions.

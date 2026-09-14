@@ -16,7 +16,7 @@ Do not mix these responsibilities without an explicit reason.
 
 ## Current Milestone
 
-M0 through M2.3b, M3 and M4 are complete. Continue the existing M5–M7 roadmap under
+M0 through M2.3b and M3–M5 are complete. Continue the existing M6–M7 roadmap under
 A3; M2.4 remains deferred. Live observation remains explicit and foreground.
 
 ## Roadmap Execution

@@ -142,3 +142,16 @@ The product mode for comparing agents, context strategies, and architectural dec
 Deterministic evidence-backed status, changes, day, resume and explain reports.
 A resume report preserves recorded state; it does not execute a provider resume
 or invent a plan. An explain report exposes evidence, not an inferred cause.
+
+## Repo Map and Context Bootstrap
+
+A Repo Map is a deterministic inventory of tracked working-tree paths, content
+hashes and available symbol locations. A Context Bootstrap combines canonical
+entry files and targeted source ranges with hashes, budget metrics and omissions.
+Token estimates are labeled approximations, never reported provider usage.
+
+## Knowledge Provider
+
+A source interface for targeted search and exact evidence-linked reads. The local
+repository implementation is authoritative; optional external sources cannot
+replace current Git/source evidence.
