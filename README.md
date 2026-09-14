@@ -20,6 +20,37 @@ Run these commands from the project you want Architect OS to track:
 architect init
 architect run "Describe the task" --agent codex --fidelity NATIVE
 architect status
+architect chronicle
+architect chronicle --json
+architect chronicle --run <full-run-id>
+architect chronicle --run <full-run-id> --event <evidence-event-id> --json
 ```
 
+`chronicle` reads the initialized current project's history without changing it.
+Run and evidence IDs are exact, full identifiers. JSON listing returns an array
+of episodes; `--event` returns one original normalized event, including its
+stored metadata. Evidence IDs appear in both text and JSON listings.
+An initialized project without runs returns `[]` in JSON mode. Errors go to
+stderr with a nonzero exit status and no partial JSON on stdout.
+
 For product intent, architecture, terminology, and development order, see [`docs/`](docs/).
+
+## Historical views (M3)
+
+```bash
+architect chronicle --view changes --json
+architect chronicle --view decisions --revision HEAD --json
+architect chronicle --view receipts --run <full-run-id> --json
+architect chronicle --view automations --json
+architect chronicle --view failures --json
+```
+
+Changes and ADR revisions come from committed Git history, independently of
+run observations. For pinned queries, use a full commit ID with `--revision`.
+Merge paths compare against the first parent; deleted ADR records cite prior
+content. Source files can be resolved with
+`GitHistory(root).file(source_commit_id, path)` or inspected directly in Git.
+Receipts/failures cite source runs and events; use the existing `--run ... --event
+... --json` command for event evidence. Empty results are valid: no observed
+failure or explicit automation must not be invented. Current providers do not
+emit the optional automation declaration described in ADR-005.

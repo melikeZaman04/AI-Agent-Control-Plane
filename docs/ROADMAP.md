@@ -16,19 +16,101 @@ Define the provider-independent normalized event contract before provider integr
 
 Add Claude, Codex, and passive observers that translate provider evidence into normalized Architect events.
 
-**Status:** IN PROGRESS.
+**Status:** Approved live integrations COMPLETE; passive observer DEFERRED.
 
 - M2.1 Observer Foundation — COMPLETE: synthetic Claude normalization, session/run bindings, synchronous ingest, and isolated pipeline tests.
 - M2.2 Live Claude Integration — COMPLETE: stdin CLI, live-format normalization, opt-in hook template and automated tests implemented. User-performed live smoke test confirmed FILE_READ and TEST_EXECUTION in Architect inspect; see `docs/integrations/claude.md` for evidence.
 - M2.3a Codex Observer Foundation — COMPLETE: synthetic OTel-style normalization, Codex session/run correlation, privacy filtering, end-to-end SQLite inspection, and transport design. Live transport is not included; see `docs/integrations/codex.md`.
-- M2.3b Live Codex Transport — PLANNED: validate the native OTLP envelope and implement the approved receiver option.
-- M2.4 Passive Observer — LATER, if still justified.
+- M2.3b Live Codex OpenTelemetry Ingest — COMPLETE: foreground loopback binary OTLP/HTTP listener, explicit run correlation, allowlisted live normalization, and transport tests. Real Codex tool-result and approval events were recorded and inspected on 2026-09-14 UTC; evidence and repeatable smoke commands are in `docs/integrations/codex.md`.
+- M2.4 Passive Observer — DEFERRED; requires a demonstrated need and human approval.
 
-M2.2 installation is explicit and project-local. Do not start M2.3 automatically.
+M2.2 installation is explicit and project-local. M2.3b export is opt-in and user-controlled. Do not start M2.4 automatically.
 
 ## M3 — Project Chronicle
 
 Build project timelines, change and decision history, automation receipts, and failure records.
+
+**Parent status:** COMPLETE. Acceptance evidence: [`milestones/M3.md`](milestones/M3.md). The entire M3 boundary is approved at A2.
+Continue between M3.x tasks without further routine approval; stop before M4.
+
+Approved closure contract: deterministic access to Git commit identities/times/
+changed paths; durable decisions evidenced by version-controlled ADRs (or already
+supported explicit decision records); structured evidence-backed run/work receipts;
+automation receipts only where explicit evidence establishes automation; and
+failure history from explicit run/event outcomes. Source links must resolve,
+repeated queries must be deterministic, real Git/SQLite tests and full regressions
+must pass, canonical docs must match, and no Human Decision Gate may remain.
+No semantic summaries, automation scheduler or M4 session-intelligence commands.
+
+### M3.1 — Chronicle Foundation
+
+**Status:** COMPLETE. First A2 autonomy pilot under `EXECUTION_PROTOCOL.md`.
+Implemented as read-only run episodes derived from SQLite, with no schema change.
+Acceptance evidence: [`milestones/M3.1.md`](milestones/M3.1.md). M3.2 is approved with the scope below.
+
+Scope: a minimal deterministic, evidence-linked project history derived from
+existing runs and normalized events. A service query API is sufficient. SQLite
+remains the local source; additive storage only if necessary. No LLM generation.
+
+Exit criteria:
+
+1. Clear Chronicle domain model with project/run association, episode kind,
+   begin/end times when known, structured observed facts and evidence IDs.
+2. Deterministic output, preserved provenance, minimal local storage, idempotent
+   reprocessing and deterministic chronological queries.
+3. Normalized Claude/Codex-origin events work through provider-independent core;
+   legacy data is not promoted to facts without valid normalization.
+4. End-to-end source event resolution, new tests and full regressions pass.
+5. Canonical docs reflect behavior and no Human Decision Gate remains unresolved.
+
+Out of scope: narrative intelligence, advanced Git analysis, `/day`, `/resume`,
+`/changes`, `/explain`, passive observation, daemons, NotebookLM, Context Compiler,
+Repo Map, retrieval, benchmarking, labs, multi-agent orchestration and web UI.
+
+### M3.2 — Chronicle CLI and evidence inspection
+
+**Status:** COMPLETE — approved scope implemented and verified.
+Acceptance evidence: [`milestones/M3.2.md`](milestones/M3.2.md).
+
+Exit criteria:
+
+1. A read-only CLI displays current-project or selected-run episodes using the
+   M3.1 Chronicle service; deterministic text and JSON output are available.
+2. Episode evidence IDs resolve to original normalized events in the selected
+   project/run, preserving provider/fidelity, unknown values and source metadata.
+3. Missing project/run/event, ambiguous project ownership and malformed evidence
+   produce explicit errors without initializing or changing stored history.
+4. Real SQLite/FlightRecorder end-to-end CLI tests and full regressions pass;
+   canonical docs and command examples match observed behavior.
+
+No new persistence, schema, dependency, natural-language intelligence, advanced
+Git analysis, `/day`, `/resume`, `/changes` or `/explain` is included.
+
+### M3.3 — Git change and durable decision history
+
+**Status:** COMPLETE.
+
+Read-only history pinned to Git commit identities, timestamps and changed paths,
+plus version-controlled ADR revisions with resolvable file/blob provenance.
+Tool approvals must never become durable decisions. Real Git tests cover root,
+merge, deletion and unusual paths, repeatability and source resolution.
+
+### M3.4 — Work receipts and failure history
+
+**Status:** COMPLETE.
+
+Derive structured receipts for terminal or observed runs, retain source event IDs,
+known file/test/provider/fidelity facts, and explicit failures. Automation requires
+an explicit supported evidence marker; absence is unknown, not proof of manual
+work. No scheduler, new provider capture or inferred causal narratives.
+
+### M3.5 — Parent closure validation
+
+**Status:** COMPLETE.
+
+Verify all historical query surfaces with real Git/SQLite evidence and stable
+ordering, run full regression, review boundaries/diffs, and update canonical
+contracts and acceptance evidence. Stop at M3 completion, before M4.
 
 ## M4 — Session Intelligence
 

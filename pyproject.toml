@@ -9,6 +9,7 @@ description = "Local-first control plane for AI coding agents"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "opentelemetry-proto",
     "rich",
     "typer",
 ]

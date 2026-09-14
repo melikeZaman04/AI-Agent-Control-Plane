@@ -52,9 +52,70 @@ The subsystem that accepts normalized events and stores an auditable record of a
 
 The evidence-backed project timeline built from runs, changes, decisions, failures, automations, and test history.
 
+M3.1 implements a **Chronicle Episode**: a deterministic run-scoped piece of
+project history derived from local run metadata and normalized events.
+An **Observation Fact** counts observations with the same normalized type,
+status, provider and fidelity, preserving all supporting ArchitectEvent IDs.
+These counts describe observed events, not unique tool invocations or inferred outcomes.
+**Evidence inspection** resolves an episode's supporting ArchitectEvent ID within
+its project and run to the original normalized source record; it adds no facts.
+
+## Change history
+
+Deterministic committed Git history: commit identity, committer time and changed
+paths, with provenance to the corresponding Git trees. It does not imply a run
+caused a commit and excludes uncommitted working-tree content.
+
+## Durable decision history
+
+Version-controlled ADR document revisions with commit/path/blob evidence. Tool
+approval events remain operational observations; no durable decision is inferred
+from ordinary activity or an ADR's acceptance status guessed from its existence.
+
+## Work receipt
+
+A structured, query-time record of a terminal or observed run, retaining run-row
+and event provenance. It preserves known outcomes and unknowns; existence of a
+receipt alone does not imply success or completion.
+
+## Automation receipt
+
+A work receipt explicitly identified as automated by the lifecycle metadata
+contract in ADR-005. Provider identity and agent activity do not establish this.
+
+## Failure record
+
+An explicit failed run, normalized error observation or failed tool/test event,
+linked to its source. It records no inferred cause or explanatory narrative.
+
 ## Context Economy
 
 The practice of reducing repeated repository rediscovery and unnecessary context usage without sacrificing correctness.
+
+## Autonomy Level
+
+The scope of decisions delegated to an agent: **A0 Manual** (human specifies
+steps), **A1 Task Autonomy** (one bounded task), **A2 Milestone Autonomy** (tasks
+inside an approved milestone), **A3 Roadmap Autonomy** (move between milestones),
+**A4 Product Autonomy** (alter product direction). Current level is A2; A3/A4 are disabled.
+
+## Milestone Autonomy
+
+Agent-controlled decomposition, implementation and validation inside human-approved
+scope and exit criteria. Execution behavior belongs to `EXECUTION_PROTOCOL.md`.
+
+## Human Decision Gate
+
+A documented condition requiring the agent to stop affected work for a human
+decision; canonical triggers are in `EXECUTION_PROTOCOL.md`.
+
+## Exit Criteria
+
+Observable conditions that must all be satisfied before declaring a milestone complete.
+
+## Repair Loop
+
+One meaningful failure → investigation → change → retest cycle for a blocking problem.
 
 ## Context Compiler
 

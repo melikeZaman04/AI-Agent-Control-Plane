@@ -73,13 +73,22 @@ class FlightRecorder:
             rows = connection.execute(
                 "SELECT id, payload FROM events WHERE run_id = ? ORDER BY id", (run_id,)
             ).fetchall()
-        events = []
-        for insertion_id, payload in rows:
-            try:
-                data = json.loads(payload)
-            except (TypeError, ValueError):
-                continue  # M0 free-text payloads are not normalized events.
-            if isinstance(data, dict) and {"event_id", "run_id", "event_type", "timestamp"} <= data.keys():
-                events.append((ArchitectEvent(**data), insertion_id))
-        events.sort(key=lambda pair: (pair[0].timestamp, pair[1]))
-        return [event for event, _ in events]
+        return normalized_timeline(rows)
+
+
+def normalized_timeline(rows) -> list[ArchitectEvent]:
+    """Decode stored (insertion ID, payload) pairs using the recorder contract.
+
+    Legacy payloads are not normalized evidence. Invalid normalized envelopes
+    raise instead of silently erasing evidence. Callers may use a SQLite snapshot.
+    """
+    events = []
+    for insertion_id, payload in rows:
+        try:
+            data = json.loads(payload)
+        except (TypeError, ValueError):
+            continue  # M0 free-text payloads are not normalized events.
+        if isinstance(data, dict) and {"event_id", "run_id", "event_type", "timestamp"} <= data.keys():
+            events.append((ArchitectEvent(**data), insertion_id))
+    events.sort(key=lambda pair: (pair[0].timestamp, pair[1]))
+    return [event for event, _ in events]

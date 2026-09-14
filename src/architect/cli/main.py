@@ -6,6 +6,7 @@ import sqlite3
 import json
 import os
 import sys
+from contextlib import closing
 from pathlib import Path
 
 import typer
@@ -14,6 +15,7 @@ from rich.table import Table
 from rich.text import Text
 from architect.recorder.recorder import FlightRecorder
 from architect.ingest import ingest
+from architect.chronicle import ProjectChronicle
 
 from architect.storage.db import (
     FIDELITY_LEVELS,
@@ -169,6 +171,87 @@ def inspect_command(run_id: str = typer.Argument(..., help="Full Architect run I
             console.print(Text("  " + json.dumps(event.metadata, sort_keys=True, ensure_ascii=False)))
 
 
+@app.command("chronicle")
+def chronicle_command(
+    run_id: str | None = typer.Option(None, "--run", help="Exact full Architect run ID."),
+    event_id: str | None = typer.Option(None, "--event", help="Exact evidence event ID; requires --run."),
+    as_json: bool = typer.Option(False, "--json", help="Emit deterministic JSON."),
+    view: str = typer.Option("episodes", "--view", help="episodes, changes, decisions, receipts, automations, or failures."),
+    revision: str = typer.Option("HEAD", "--revision", help="Git revision for changes/decisions; resolved once to a commit."),
+) -> None:
+    """Display project history or inspect a run's source evidence (read-only)."""
+    if view not in {"episodes", "changes", "decisions", "receipts", "automations", "failures"}:
+        raise typer.BadParameter("Unknown Chronicle view")
+    if event_id is not None and view != "episodes":
+        raise typer.BadParameter("--event requires the episodes view")
+    if view in {"changes", "decisions"} and run_id is not None:
+        raise typer.BadParameter("Git history cannot be attributed to a run; omit --run")
+    if revision != "HEAD" and view not in {"changes", "decisions"}:
+        raise typer.BadParameter("--revision requires changes or decisions")
+    if event_id is not None and run_id is None:
+        raise typer.BadParameter("--event requires --run")
+    root, database = _current_project()
+    try:
+        if not database.is_file():
+            raise ValueError("Project database missing; run architect init at the project root")
+        with closing(sqlite3.connect(database.as_uri() + "?mode=ro", uri=True)) as connection:
+            projects = connection.execute("SELECT id, root_path FROM projects").fetchall()
+        if len(projects) != 1:
+            raise ValueError("Chronicle requires exactly one registered project per database")
+        project_id, project_root = projects[0]
+        if project_root != str(root):
+            raise ValueError("Registered project root does not match the current directory")
+        chronicle = ProjectChronicle(database)
+        if view != "episodes":
+            if view in {"changes", "decisions"}:
+                from architect.git_history import GitHistory
+                history = GitHistory(root)
+                records = history.changes(revision) if view == "changes" else history.decisions(revision)
+            else:
+                if run_id is not None and not chronicle.query(project_id, run_id=run_id):
+                    raise ValueError(f"Unknown run: {run_id}")
+                records = (chronicle.failures(project_id, run_id=run_id) if view == "failures"
+                           else chronicle.receipts(project_id, run_id=run_id))
+                if view == "automations":
+                    records = [record for record in records if record['automated'] is True]
+            # ASCII escaping preserves arbitrary Git filename bytes in valid JSON.
+            output = json.dumps(records, sort_keys=True, ensure_ascii=True,
+                                **({"separators": (",", ":")} if as_json else {"indent": 2}))
+        elif event_id is not None:
+            event = chronicle.evidence(project_id, run_id=run_id, event_id=event_id)
+            data = json.loads(event.to_json())
+            output = event.to_json() if as_json else "Evidence\n" + json.dumps(
+                data, sort_keys=True, ensure_ascii=False, indent=2,
+            )
+        else:
+            episodes = chronicle.query(project_id, run_id=run_id)
+            if run_id is not None and not episodes:
+                raise ValueError(f"Unknown run: {run_id}")
+            if as_json:
+                output = "[" + ",".join(episode.to_json() for episode in episodes) + "]"
+            else:
+                lines = []
+                for episode in episodes:
+                    lines.extend([
+                        f"Episode: {episode.episode_id}",
+                        f"Project: {episode.project_root}",
+                        f"Run: {episode.run_id}  Status: {episode.run_status}",
+                        f"Began: {episode.began_at or 'unknown'}  Ended: {episode.ended_at or 'unknown'}",
+                    ])
+                    if not episode.facts:
+                        lines.append("  No normalized evidence.")
+                    for fact in episode.facts:
+                        lines.append(f"  {fact.event_type} status={fact.status if fact.status is not None else 'unknown'} "
+                                     f"provider={fact.provider if fact.provider is not None else 'unknown'} "
+                                     f"fidelity={fact.fidelity if fact.fidelity is not None else 'unknown'} count={fact.count}")
+                        lines.append("    Evidence: " + ", ".join(fact.evidence_event_ids))
+                output = "\n".join(lines) if lines else "No Chronicle episodes."
+    except (OSError, sqlite3.Error, ValueError, TypeError) as error:
+        typer.echo(f"Chronicle failed: {error}", err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(output)
+
+
 @app.command("ingest")
 def ingest_command(provider: str = typer.Argument(..., help="Hook provider (claude).")) -> None:
     """Consume one live hook JSON object from stdin; successful ingestion is quiet."""
@@ -182,6 +265,30 @@ def ingest_command(provider: str = typer.Argument(..., help="Hook provider (clau
                run_id=os.environ.get("ARCHITECT_RUN_ID"))
     except (OSError, ValueError, TypeError, sqlite3.Error) as error:
         typer.echo(f"Architect ingest failed: {error}", err=True)
+        raise typer.Exit(code=1) from error
+
+
+@app.command("codex-listen")
+def codex_listen_command(
+    run_id: str = typer.Option(..., "--run", help="Full run ID or unique prefix."),
+    host: str = typer.Option("127.0.0.1", help="Loopback only."),
+    port: int = typer.Option(14318, min=1, max=65535),
+) -> None:
+    """Receive binary Codex OTLP logs until Ctrl+C."""
+    from architect.otlp import CodexLogServer
+    _, database = _current_project()
+    try:
+        with CodexLogServer((host, port), run_id=run_id, db_path=database) as server:
+            console.print(Text(f"Architect Codex listener\nRun: {server.run_id}\n"
+                               f"Listening: http://{host}:{port}/v1/logs\nProvider: codex\nPress Ctrl+C to stop."))
+            try:
+                server.serve_forever(poll_interval=0.2)
+            except KeyboardInterrupt:
+                pass
+            finally:
+                console.print(Text(f"Listener stopped. Recorded: {server.recorded}; ignored: {server.ignored}; rejected: {server.rejected}"))
+    except (ValueError, OSError, sqlite3.Error) as error:
+        typer.echo(f"Codex listener failed: {error}", err=True)
         raise typer.Exit(code=1) from error
 
 

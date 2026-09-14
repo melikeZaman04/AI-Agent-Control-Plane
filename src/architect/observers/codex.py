@@ -1,4 +1,4 @@
-"""Normalize the documented Codex OTel event families from synthetic records."""
+"""Normalize synthetic and decoded live Codex OTel records."""
 
 from collections.abc import Mapping
 from copy import deepcopy
@@ -65,7 +65,10 @@ def codex_session_id(payload: Mapping) -> str:
 
 
 class CodexObserver:
-    """Translate a narrow synthetic representation of Codex OTel log records."""
+    """Translate transport-neutral Codex records without persisting them."""
+
+    def __init__(self, *, live: bool = False):
+        self.live = live
 
     def normalize(self, payload: Mapping, *, run_id: str) -> list[ArchitectEvent]:
         if not isinstance(payload, Mapping):
@@ -80,17 +83,29 @@ class CodexObserver:
         attributes = payload.get("attributes")
         if not isinstance(attributes, Mapping):
             raise ValueError("Codex telemetry attributes must be an object")
-        session_id = _required_string(attributes, "conversation.id")
-        retained, omitted = _audit_attributes(attributes)
+        session_id = attributes.get("conversation.id") if self.live else _required_string(attributes, "conversation.id")
+        if session_id is not None and (not isinstance(session_id, str) or not session_id.strip()):
+            raise ValueError("Invalid conversation.id")
+        if self.live:
+            # No raw command, arguments, output, prompt, or arbitrary nested metadata.
+            allowed = {"conversation.id", "tool_name", "success", "duration_ms",
+                       "decision", "decision_source", "call_id", "model", "app.version"}
+            retained = {key: value for key, value in attributes.items()
+                        if key in allowed and isinstance(value, (str, bool, int, float))}
+            omitted = []
+        else:
+            retained, omitted = _audit_attributes(attributes)
         metadata = {
             "native_event_name": event_name,
             "provider_session_id": session_id,
-            "synthetic": True,
+            "synthetic": not self.live,
             "telemetry_source": "opentelemetry_log",
             "otel_attributes": retained,
         }
         if omitted:
             metadata["sensitive_attributes_omitted"] = omitted
+        if session_id is None:
+            metadata.pop("provider_session_id")
 
         if event_name == "codex.tool_decision":
             decision = _required_string(attributes, "decision")
@@ -111,11 +126,16 @@ class CodexObserver:
         else:
             tool = _required_string(attributes, "tool_name")
             success = attributes.get("success")
+            # Verified on Codex 0.154.0-alpha.6.1: these are OTLP strings.
+            if self.live and isinstance(success, str) and success in {"true", "false"}:
+                success = success == "true"
             if not isinstance(success, bool):
                 raise ValueError("Codex tool_result success must be boolean")
             status = "success" if success else "failed"
             duration_ms = attributes.get("duration_ms")
-            command = attributes.get("command")
+            if self.live and isinstance(duration_ms, str):
+                duration_ms = float(duration_ms)
+            command = None if self.live else attributes.get("command")
             if command is not None and not isinstance(command, str):
                 raise ValueError("Codex command must be a string")
             event_type = "test_execution" if command and _is_pytest(command) else "tool_execution"

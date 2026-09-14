@@ -16,9 +16,20 @@ Do not mix these responsibilities without an explicit reason.
 
 ## Current Milestone
 
-M0, M1, M2.1, M2.2, and M2.3a are complete. Consult `docs/ROADMAP.md` and `docs/integrations/codex.md`. Do not start live Codex transport automatically.
+M0 through M2.3b and the entire M3 Project Chronicle milestone are complete.
+M2.4 remains deferred. No M4 implementation is authorized; await human approval.
+See `docs/ROADMAP.md` and `docs/milestones/M3.md`. Live Codex observation remains
+explicitly started in the foreground.
 
-Do not implement global Claude hook installation, Codex telemetry ingestion, NotebookLM, Repo Map, Context Compiler, Chronicle intelligence, benchmark engine, labs runtime, multi-agent orchestration, or a web UI yet. See `docs/ROADMAP.md`.
+## Milestone Execution
+
+Current autonomy level: **A2 — Milestone Autonomy**. For milestone work, read
+`docs/EXECUTION_PROTOCOL.md`. Routine implementation decisions do not require
+human confirmation. Its Human Decision Gates require stopping affected work.
+The approved boundary is the M3 parent milestone. Do not stop for routine approval
+between M3.x tasks. Stop before M4. Do not commit or push.
+
+Do not implement global Claude hook installation, background telemetry services, passive observation, NotebookLM, Repo Map, Context Compiler, Chronicle intelligence, benchmark engine, labs runtime, multi-agent orchestration, or a web UI yet. See `docs/ROADMAP.md`.
 
 ## Engineering Rules
 
