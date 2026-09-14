@@ -250,6 +250,29 @@ M3 adds no persistence, dependency or M4 feature. Read-only Git and SQLite views
 are independent snapshots; no cross-source atomicity or commit/run attribution
 is promised. Whole-parent validation is in [milestones/M3.md](milestones/M3.md).
 
+## M4 — Deterministic session intelligence
+
+`SessionIntelligence(db_path, project_id)` composes existing evidence into status,
+resume, explain and day reports; changes uses the Git history source directly.
+CLI: `architect session <status|changes|day|resume|explain> [--json]`.
+Existing `architect status` retains its M0 behavior.
+
+Status reports recorded counts/active IDs and source episodes, explicitly leaving
+live process state unknown. Resume selects an exact run or the greatest recorded
+start time (unknown starts first, full-ID ties), returns source history and no
+invented next actions or provider command. Explain exposes exact run/event
+evidence, with unknown cause and no recommendations. These reports do not execute
+agents, resume provider sessions or interpret arbitrary metadata as facts.
+
+Day requires `--date YYYY-MM-DD`, defaults to UTC and accepts an IANA timezone.
+It filters observed receipt events and run boundary occurrences, not all activity
+of a run merely because that run began on the day. Changes accepts `--revision`
+and optional reachable `--since` baseline; baseline ancestry is excluded. Git
+and SQLite remain independent snapshots. No commit/run causal attribution or
+past run status is reconstructed from today's status. All source IDs remain in
+the output; error cases emit stderr without partial JSON. LLM narratives and
+handoff are deferred. Evidence: [milestones/M4.md](milestones/M4.md).
+
 ## Component Status
 
 | Component | Status |
@@ -259,7 +282,7 @@ is promised. Whole-parent validation is in [milestones/M3.md](milestones/M3.md).
 | Flight Recorder Core | COMPLETE |
 | Observer Adapters | FOUNDATION, LIVE CLAUDE AND LIVE CODEX COMPLETE; PASSIVE PLANNED |
 | Project Chronicle | M3 COMPLETE; M4 NOT STARTED |
-| Session Intelligence | PLANNED |
+| Session Intelligence | M4 COMPLETE |
 | Context Economy | PLANNED |
 | NotebookLM Provider | PLANNED |
 | Benchmark | PLANNED |

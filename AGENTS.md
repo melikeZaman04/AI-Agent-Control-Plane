@@ -16,20 +16,23 @@ Do not mix these responsibilities without an explicit reason.
 
 ## Current Milestone
 
-M0 through M2.3b and the entire M3 Project Chronicle milestone are complete.
-M2.4 remains deferred. No M4 implementation is authorized; await human approval.
-See `docs/ROADMAP.md` and `docs/milestones/M3.md`. Live Codex observation remains
-explicitly started in the foreground.
+M0 through M2.3b, M3 and M4 are complete. Continue the existing M5–M7 roadmap under
+A3; M2.4 remains deferred. Live observation remains explicit and foreground.
 
-## Milestone Execution
+## Roadmap Execution
 
-Current autonomy level: **A2 — Milestone Autonomy**. For milestone work, read
-`docs/EXECUTION_PROTOCOL.md`. Routine implementation decisions do not require
-human confirmation. Its Human Decision Gates require stopping affected work.
-The approved boundary is the M3 parent milestone. Do not stop for routine approval
-between M3.x tasks. Stop before M4. Do not commit or push.
+Current autonomy level: **A3 — Roadmap Autonomy**; A4 is disabled. Read
+`docs/EXECUTION_PROTOCOL.md`. Complete parent milestones, record evidence, create
+local checkpoint commits and continue automatically across existing milestone
+boundaries. Derive conservative exit criteria from the canonical contract.
+Human Decision Gates remain active for material decisions; missing checklists
+alone do not require approval. Stop at a real gate or the documented roadmap end.
+Push only under the protocol's verified-safe conditions; otherwise continue locally.
 
-Do not implement global Claude hook installation, background telemetry services, passive observation, NotebookLM, Repo Map, Context Compiler, Chronicle intelligence, benchmark engine, labs runtime, multi-agent orchestration, or a web UI yet. See `docs/ROADMAP.md`.
+Do not introduce unrelated milestones, global hooks, passive/background observation,
+automation scheduling, multi-agent runtime orchestration or a web UI. Optional
+NotebookLM and handoff remain deferred unless the canonical scope requires them.
+Implement Context Economy, benchmarking and labs only in their roadmap order.
 
 ## Engineering Rules
 

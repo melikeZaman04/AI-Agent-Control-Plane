@@ -54,3 +54,17 @@ Receipts/failures cite source runs and events; use the existing `--run ... --eve
 ... --json` command for event evidence. Empty results are valid: no observed
 failure or explicit automation must not be invented. Current providers do not
 emit the optional automation declaration described in ADR-005.
+
+## Session reports (M4)
+
+```bash
+architect session status --json
+architect session changes --since <baseline-commit> --json
+architect session day --date 2026-09-15 --timezone Europe/Istanbul --json
+architect session resume --run <full-run-id> --json
+architect session explain --run <full-run-id> --event <event-id> --json
+```
+
+These commands only read evidence; resume does not launch an agent and explain
+does not invent causes or recommendations. Omit `--run` on resume to select the
+latest recorded start (unknown starts first, full run ID breaks ties).

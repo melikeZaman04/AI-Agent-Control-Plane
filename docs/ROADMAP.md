@@ -30,8 +30,7 @@ M2.2 installation is explicit and project-local. M2.3b export is opt-in and user
 
 Build project timelines, change and decision history, automation receipts, and failure records.
 
-**Parent status:** COMPLETE. Acceptance evidence: [`milestones/M3.md`](milestones/M3.md). The entire M3 boundary is approved at A2.
-Continue between M3.x tasks without further routine approval; stop before M4.
+**Parent status:** COMPLETE. Acceptance evidence: [`milestones/M3.md`](milestones/M3.md). M3 was completed under A2; the subsequent A3 approval now governs progression.
 
 Approved closure contract: deterministic access to Git commit identities/times/
 changed paths; durable decisions evidenced by version-controlled ADRs (or already
@@ -110,11 +109,24 @@ work. No scheduler, new provider capture or inferred causal narratives.
 
 Verify all historical query surfaces with real Git/SQLite evidence and stable
 ordering, run full regression, review boundaries/diffs, and update canonical
-contracts and acceptance evidence. Stop at M3 completion, before M4.
+contracts and acceptance evidence. M3 exit evidence is complete; continue according to the current execution protocol.
 
 ## M4 — Session Intelligence
 
 Build status, changes, day, resume, explain, and later optional handoff workflows.
+
+**Status:** COMPLETE — evidence in `docs/milestones/M4.md`; handoff and LLM narrative deferred.
+
+Exit criteria: deterministic read-only status, changes, day, resume and explain
+reports over existing Chronicle/Git/SQLite, with resolvable source references.
+Status reflects recorded run states, not inferred live process state. Changes
+reports committed history at a pinned revision and optional explicit baseline.
+Day requires an explicit ISO date and timezone (UTC default), selects observed
+events, run boundary timestamps and commits in that day. Resume exposes the
+selected/latest recorded run, evidence and failures without launching an agent or
+inventing next steps. Explain resolves selected run/event evidence with explicit
+unknown cause/recommendation fields. Real Git/SQLite and CLI tests verify repeatable
+outputs, boundaries and absent evidence; full regression and docs must pass.
 
 ## M5 — Context Economy
 

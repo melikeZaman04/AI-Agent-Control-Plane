@@ -47,6 +47,20 @@ def _current_project() -> tuple[Path, Path]:
     return root, project_database_path(root)
 
 
+def _registered_project():
+    root, database = _current_project()
+    if not database.is_file():
+        raise ValueError("Project database missing; run architect init at the project root")
+    with closing(sqlite3.connect(database.as_uri() + "?mode=ro", uri=True)) as connection:
+        projects = connection.execute("SELECT id, root_path FROM projects").fetchall()
+    if len(projects) != 1:
+        raise ValueError("Chronicle requires exactly one registered project per database")
+    project_id, project_root = projects[0]
+    if project_root != str(root):
+        raise ValueError("Registered project root does not match the current directory")
+    return root, database, project_id
+
+
 @app.command("init")
 def init_command() -> None:
     """Initialize Architect OS state for the current project."""
@@ -190,17 +204,8 @@ def chronicle_command(
         raise typer.BadParameter("--revision requires changes or decisions")
     if event_id is not None and run_id is None:
         raise typer.BadParameter("--event requires --run")
-    root, database = _current_project()
     try:
-        if not database.is_file():
-            raise ValueError("Project database missing; run architect init at the project root")
-        with closing(sqlite3.connect(database.as_uri() + "?mode=ro", uri=True)) as connection:
-            projects = connection.execute("SELECT id, root_path FROM projects").fetchall()
-        if len(projects) != 1:
-            raise ValueError("Chronicle requires exactly one registered project per database")
-        project_id, project_root = projects[0]
-        if project_root != str(root):
-            raise ValueError("Registered project root does not match the current directory")
+        root, database, project_id = _registered_project()
         chronicle = ProjectChronicle(database)
         if view != "episodes":
             if view in {"changes", "decisions"}:
@@ -248,6 +253,57 @@ def chronicle_command(
                 output = "\n".join(lines) if lines else "No Chronicle episodes."
     except (OSError, sqlite3.Error, ValueError, TypeError) as error:
         typer.echo(f"Chronicle failed: {error}", err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(output)
+
+
+@app.command("session")
+def session_command(
+    report: str = typer.Argument(..., help="status, changes, day, resume, or explain"),
+    run_id: str | None = typer.Option(None, "--run"),
+    event_id: str | None = typer.Option(None, "--event"),
+    day: str | None = typer.Option(None, "--date", help="Explicit YYYY-MM-DD for day."),
+    timezone: str = typer.Option("UTC", "--timezone"),
+    revision: str = typer.Option("HEAD", "--revision"),
+    since: str | None = typer.Option(None, "--since", help="Reachable baseline revision, excluded from changes."),
+    as_json: bool = typer.Option(False, "--json"),
+) -> None:
+    """Read deterministic session reports; no agent execution or inferred advice."""
+    from architect.session import SessionIntelligence
+    from zoneinfo import ZoneInfoNotFoundError
+    if report not in {"status", "changes", "day", "resume", "explain"}:
+        raise typer.BadParameter("Unknown session report")
+    if (report == "day") != (day is not None):
+        raise typer.BadParameter("--date is required only for day")
+    if report == "explain" and run_id is None:
+        raise typer.BadParameter("explain requires --run")
+    if event_id is not None and report != "explain":
+        raise typer.BadParameter("--event requires explain")
+    if run_id is not None and report not in {"resume", "explain"}:
+        raise typer.BadParameter("--run requires resume or explain")
+    if since is not None and report != "changes":
+        raise typer.BadParameter("--since requires changes")
+    if revision != "HEAD" and report not in {"changes", "day"}:
+        raise typer.BadParameter("--revision requires changes or day")
+    if timezone != "UTC" and report != "day":
+        raise typer.BadParameter("--timezone requires day")
+    try:
+        root, database, project_id = _registered_project()
+        service = SessionIntelligence(database, project_id)
+        if report == "status":
+            result = service.status()
+        elif report == "changes":
+            result = service.changes(root, revision=revision, since=since)
+        elif report == "day":
+            result = service.day(root, day, timezone=timezone, revision=revision)
+        elif report == "resume":
+            result = service.resume(run_id)
+        else:
+            result = service.explain(run_id, event_id=event_id)
+        output = json.dumps(result, sort_keys=True, ensure_ascii=True,
+                            **({"separators": (",", ":")} if as_json else {"indent": 2}))
+    except (OSError, sqlite3.Error, ValueError, TypeError, ZoneInfoNotFoundError) as error:
+        typer.echo(f"Session report failed: {error}", err=True)
         raise typer.Exit(code=1) from error
     typer.echo(output)
 

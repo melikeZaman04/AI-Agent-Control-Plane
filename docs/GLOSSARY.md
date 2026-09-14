@@ -97,7 +97,7 @@ The practice of reducing repeated repository rediscovery and unnecessary context
 The scope of decisions delegated to an agent: **A0 Manual** (human specifies
 steps), **A1 Task Autonomy** (one bounded task), **A2 Milestone Autonomy** (tasks
 inside an approved milestone), **A3 Roadmap Autonomy** (move between milestones),
-**A4 Product Autonomy** (alter product direction). Current level is A2; A3/A4 are disabled.
+**A4 Product Autonomy** (alter product direction). Current level is A3; A4 remains disabled.
 
 ## Milestone Autonomy
 
@@ -136,3 +136,9 @@ The product mode for controlled engineering labs and deliberate failure scenario
 ## RESEARCH
 
 The product mode for comparing agents, context strategies, and architectural decisions.
+
+## Session Intelligence
+
+Deterministic evidence-backed status, changes, day, resume and explain reports.
+A resume report preserves recorded state; it does not execute a provider resume
+or invent a plan. An explain report exposes evidence, not an inferred cause.
