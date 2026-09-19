@@ -78,6 +78,8 @@ class GitHistory:
         """
         if not re.fullmatch(r'[0-9a-f]{40}|[0-9a-f]{64}', commit_id):
             raise ValueError('A full Git commit ID is required')
+        if self._git('cat-file', '-t', commit_id).strip() != b'commit':
+            raise ValueError('A Git commit object is required')
         if not path or path.startswith('/') or any(part in ('.', '..', '') for part in path.split('/')):
             raise ValueError('An exact relative Git path is required')
         rows = self._git('ls-tree', '-z', commit_id, '--', ':(literal)' + path).split(b'\0')

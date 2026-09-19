@@ -260,3 +260,14 @@ print(hashlib.sha256(raw).hexdigest(), end='')
     assert result['stdout_sha256'] == sha256(result['context_sha256'].encode()).hexdigest()
     assert bool(result['context_characters']) == nonempty
     assert result['usage'] is None
+
+
+def test_git_file_requires_commit_object(repo):
+    (repo / 'module.py').write_text('pass\n')
+    commit_id = commit(repo)
+    history = GitHistory(repo)
+    for suffix in ('^{tree}', ':module.py'):
+        object_id = git(repo, 'rev-parse', commit_id + suffix).decode().strip()
+        with pytest.raises(ValueError, match='commit'):
+            history.file(object_id, 'module.py')
+    assert history.file(commit_id, 'module.py')['content'] == b'pass\n'
