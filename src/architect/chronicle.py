@@ -22,15 +22,9 @@ def _project(connection, project_id):
 
 def _events(connection, run_id):
     rows = connection.execute(
-        "SELECT id, payload FROM events WHERE run_id = ? ORDER BY id", (run_id,),
+        "SELECT id, payload, event_type FROM events WHERE run_id = ? ORDER BY id", (run_id,),
     ).fetchall()
-    events = normalized_timeline(rows)
-    seen = set()
-    for event in events:
-        if event.run_id != run_id or event.event_id in seen:
-            raise ValueError("Inconsistent normalized evidence identity")
-        seen.add(event.event_id)
-    return events
+    return normalized_timeline(rows, run_id=run_id)
 
 
 @dataclass(frozen=True)

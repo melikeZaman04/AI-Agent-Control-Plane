@@ -165,7 +165,7 @@ def inspect_command(run_id: str = typer.Argument(..., help="Full Architect run I
             raise typer.Exit(code=1)
         events = FlightRecorder(database).timeline(run["run_id"])
     except (OSError, sqlite3.Error, ValueError) as error:
-        console.print(Text(f"Inspection failed: {error}", style="red"))
+        typer.echo(f"Inspection failed: {error}", err=True)
         raise typer.Exit(code=1) from error
     console.print("[bold]Architect Run[/bold]")
     for label, key in (("Run ID", "run_id"), ("Agent", "agent_name"),

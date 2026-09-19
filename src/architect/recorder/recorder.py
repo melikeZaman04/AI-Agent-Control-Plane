@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-from architect.recorder.events import ArchitectEvent
+from architect.recorder.events import ArchitectEvent, EVENT_TYPES
 from architect.storage.db import _connect, initialize_database
 
 
@@ -71,24 +71,46 @@ class FlightRecorder:
     def timeline(self, run_id: str) -> list[ArchitectEvent]:
         with _connect(self.database) as connection:
             rows = connection.execute(
-                "SELECT id, payload FROM events WHERE run_id = ? ORDER BY id", (run_id,)
+                "SELECT id, payload, event_type FROM events WHERE run_id = ? ORDER BY id", (run_id,)
             ).fetchall()
-        return normalized_timeline(rows)
+        return normalized_timeline(rows, run_id=run_id)
 
 
-def normalized_timeline(rows) -> list[ArchitectEvent]:
-    """Decode stored (insertion ID, payload) pairs using the recorder contract.
+def normalized_timeline(rows, *, run_id: str | None = None) -> list[ArchitectEvent]:
+    """Decode (insertion ID, payload[, stored type]) rows, validating identity.
 
-    Legacy payloads are not normalized evidence. Invalid normalized envelopes
-    raise instead of silently erasing evidence. Callers may use a SQLite snapshot.
+    Recorder writes lowercase normalized types; M0 log_event writes uppercase.
+    Imported JSON with at least three envelope keys is also recognizable as
+    normalized evidence. Unrecognizable legacy content stays stored but omitted.
+    No missing required field may be supplied by dataclass defaults on reads.
     """
     events = []
-    for insertion_id, payload in rows:
+    seen = set()
+    required = {"event_id", "run_id", "event_type", "timestamp"}
+    for row in rows:
+        insertion_id, payload = row[:2]
+        stored_type = row[2] if len(row) > 2 else None
+        normalized_row = stored_type in EVENT_TYPES
         try:
             data = json.loads(payload)
-        except (TypeError, ValueError):
+        except (TypeError, ValueError) as error:
+            if normalized_row:
+                raise ValueError(f"Invalid normalized evidence at row {insertion_id}") from error
             continue  # M0 free-text payloads are not normalized events.
-        if isinstance(data, dict) and {"event_id", "run_id", "event_type", "timestamp"} <= data.keys():
-            events.append((ArchitectEvent(**data), insertion_id))
+        envelope_keys = required.intersection(data) if isinstance(data, dict) else set()
+        if not normalized_row and len(envelope_keys) < 3:
+            continue
+        if envelope_keys != required:
+            raise ValueError(f"Incomplete normalized evidence at row {insertion_id}")
+        try:
+            event = ArchitectEvent(**data)
+        except (ValueError, TypeError) as error:
+            raise ValueError(f"Invalid normalized evidence at row {insertion_id}") from error
+        if (run_id is not None and event.run_id != run_id) or event.event_id in seen:
+            raise ValueError("Inconsistent normalized evidence identity")
+        if normalized_row and event.event_type != stored_type:
+            raise ValueError(f"Inconsistent normalized event type at row {insertion_id}")
+        seen.add(event.event_id)
+        events.append((event, insertion_id))
     events.sort(key=lambda pair: (pair[0].timestamp, pair[1]))
     return [event for event, _ in events]

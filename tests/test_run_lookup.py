@@ -43,8 +43,8 @@ def test_ambiguous_prefix(database):
         get_run('d5e1f3d0', db_path=database)
     result = CliRunner().invoke(app, ['inspect', 'd5e1f3d0'])
     assert result.exit_code == 1
-    assert 'Ambiguous run ID prefix. Use more characters.' in result.stdout
-    assert 'Timeline' not in result.stdout
+    assert 'Ambiguous run ID prefix. Use more characters.' in result.stderr
+    assert result.stdout == ''
     assert get_run(RUN_ID, db_path=database)['run_id'] == RUN_ID
 
 
