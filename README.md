@@ -103,7 +103,7 @@ architect benchmark compare .architect/benchmarks/<receipt-id>.json
 ```
 
 Use context strategy `bootstrap` with optional `query` and `max_chars`;
-argv placeholder `{context_file}` receives a temporary JSON bundle path.
+Bootstrap requires argv placeholder `{context_file}`, which receives a temporary JSON bundle path. This verifies a delivery route; it does not prove model consumption. Context character metrics describe generated source text, and an empty bundle remains possible.
 Each repetition uses the same pinned committed regular-file snapshot. Keep the
 original suite to resolve its recorded hash. Agent/model labels are declarations.
 Optional stdout JSON `{"usage":{"input_tokens":11,"output_tokens":3}}` supplies

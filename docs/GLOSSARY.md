@@ -119,7 +119,7 @@ One meaningful failure → investigation → change → retest cycle for a block
 
 ## Context Compiler
 
-A future deterministic-first subsystem that will assemble task-relevant context from bootstrap information, repository maps, targeted retrieval, and exact source. It is not part of M0.
+The M5 local context assembly capability combines canonical bootstrap files and targeted source retrieval with provenance and explicit budgets. More advanced selection strategies remain experiments, not accepted capabilities.
 
 ## Repository Ground Truth
 

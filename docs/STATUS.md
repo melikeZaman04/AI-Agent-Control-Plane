@@ -1,10 +1,16 @@
 # Architect OS — Güncel Durum
 
-2026-09-15 (Europe/Istanbul). Dal: `main`; kesin checkpoint: `git log -1 --oneline`.
+2026-09-19 (Europe/Istanbul). Dal: `rc1-acceptance-repair`; kesin checkpoint:
+`git rev-parse HEAD`.
 
 ## Sonuç
 
-**Onaylı M0–M7 yol haritası tamamlandı; insan ürün incelemesi bekleniyor.**
+**Onaylı M0–M7 yol haritası tamamlandı. RC1 kabul düzeltmeleri A1–A6 ayrı
+checkpoint'lerle işlendi; tam bağımsız yeniden kabul denetimi bekleniyor.**
+`17f8b61` HEAD'i için [RC1 kabul denetimi](audits/2026-09-19-RC1-HEAD-ACCEPTANCE.md)
+FAIL verdi: dört MAJOR, iki MINOR bulgu. Bu dal A1–A5 kaynak/test düzeltmelerini
+ve A6 belge uyumunu içerir. Tam regresyon **263 passed in 4.47s** (loopback dahil,
+A6 sonrası). Testlerin geçmesi tek başına ürün kabulü değildir.
 A3 Roadmap Autonomy kapsamında M4–M7 uygulandı ve her parent milestone için yerel
 checkpoint oluşturuldu. A4 kapalı; yeni ürün kapsamına otomatik geçilmez.
 M2.4 Passive Observer, opsiyonel NotebookLM ve handoff ertelenmiş durumda.
@@ -20,7 +26,7 @@ yerel tutuldu; push/deploy yapılmadı.
 | M6 Research / Benchmark | COMPLETE — 233 passed | [M6](milestones/M6.md) |
 | M7 Learn / Labs | COMPLETE — 239 passed | [M7](milestones/M7.md) |
 
-Son tam regresyon: **239 passed in 3.77s**. Gerçek Git/SQLite, loopback transport,
+M7 kapanışındaki tarihsel regresyon: **239 passed in 3.77s**. Gerçek Git/SQLite, loopback transport,
 alt süreçler, wheel içinden lab çalıştırma ve eşzamanlı lab kayıtları doğrulandı.
 Bağımsız risk incelemelerinde bulunan M5 eski Git üyeliği ve M6 vaka gruplama
 sorunları düzeltildi; M7 incelemesi PASS verdi.

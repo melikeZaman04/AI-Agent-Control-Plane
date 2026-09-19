@@ -48,3 +48,11 @@ The initial corpus is deliberately small. Race conditions, deadlocks, hidden
 dependencies and hallucinated APIs remain possible future corpus additions, not
 implemented scenarios. RESEARCH can explicitly benchmark selected local commands
 using M6; LEARN does not silently create benchmark or BUILD run records.
+
+## Retry corpus revision 2
+
+New retry sessions also check repeated request IDs with different amounts and
+interleaved independent ledgers. The schema remains version 1; `revision: 2`
+identifies the revised scenario. Existing sessions keep their copied evaluator
+and hash, so their historical acceptance is not silently upgraded. Start a new
+retry session to use the revised checks.

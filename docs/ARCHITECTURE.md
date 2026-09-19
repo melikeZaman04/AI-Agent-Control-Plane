@@ -138,8 +138,15 @@ uses FlightRecorder ordering (UTC timestamp then SQLite insertion ID); fact
 groups follow first supporting observation order. Stable JSON includes counts.
 The shared `normalized_timeline` decoder preserves the existing recorder
 contract: legacy payloads are skipped; invalid normalized envelopes fail.
-Chronicle additionally rejects mismatched run IDs and duplicate evidence IDs
-within a run. It never repairs or deletes original evidence.
+Recorder and Chronicle now share run-ID and within-run duplicate validation.
+Stored lowercase normalized event types identify recorder rows, even when their
+payload is truncated or missing fields. For uppercase legacy/import rows, JSON
+with at least three of event_id/run_id/event_type/timestamp is treated as an
+attempted normalized envelope; all four fields are required on reads. Other
+legacy text/JSON remains excluded. Payload event types must agree with lowercase
+normalized row types. This explicit recognition rule cannot identify arbitrary
+corruption that removes all identifying evidence. No source is repaired/deleted.
+Inspect reports validation errors on stderr without partial timeline output.
 
 M3.1 provides structured history only. Narrative summaries, richer change or
 decision analysis, persistent annotations, `/day`, `/resume`, `/changes` and
@@ -265,8 +272,10 @@ evidence, with unknown cause and no recommendations. These reports do not execut
 agents, resume provider sessions or interpret arbitrary metadata as facts.
 
 Day requires `--date YYYY-MM-DD`, defaults to UTC and accepts an IANA timezone.
-It filters observed receipt events and run boundary occurrences, not all activity
-of a run merely because that run began on the day. Changes accepts `--revision`
+It filters observed events and recorded run boundary occurrences, including
+starts without events. ProjectChronicle.occurrences reads boundaries and events
+in one SQLite snapshot. Empty observations do not prove work; M3 receipts retain
+their terminal-or-observed qualification. Changes accepts `--revision`
 and optional reachable `--since` baseline; baseline ancestry is excluded. Git
 and SQLite remain independent snapshots. No commit/run causal attribution or
 past run status is reconstructed from today's status. All source IDs remain in
@@ -304,16 +313,20 @@ models. Acceptance evidence: [milestones/M5.md](milestones/M5.md).
 
 ## Component Status
 
+Implementation scope is listed here; current product acceptance evidence is in
+[STATUS](STATUS.md). The [HEAD RC1 audit](audits/2026-09-19-RC1-HEAD-ACCEPTANCE.md)
+records the pre-repair baseline separately.
+
 | Component | Status |
 |---|---|
-| CLI | IN PROGRESS |
-| Storage | IN PROGRESS |
+| CLI | APPROVED M0–M7 COMMANDS IMPLEMENTED |
+| Storage | APPROVED LOCAL STORAGE IMPLEMENTED |
 | Flight Recorder Core | COMPLETE |
-| Observer Adapters | FOUNDATION, LIVE CLAUDE AND LIVE CODEX COMPLETE; PASSIVE PLANNED |
+| Observer Adapters | FOUNDATION, LIVE CLAUDE AND LIVE CODEX COMPLETE; PASSIVE DEFERRED |
 | Project Chronicle | M3 COMPLETE |
 | Session Intelligence | M4 COMPLETE |
 | Context Economy | M5 COMPLETE |
-| NotebookLM Provider | PLANNED |
+| NotebookLM Provider | OPTIONAL / DEFERRED |
 | Benchmark | M6 COMPLETE |
 | LEARN Labs | M7 COMPLETE |
 
@@ -322,6 +335,12 @@ models. Acceptance evidence: [milestones/M5.md](milestones/M5.md).
 RESEARCH uses version-1 JSON suites and explicit argv subprocesses. Each trial gets
 a fresh regular-file Git archive of clean tracked HEAD, without .git or untracked
 files. Context none/bootstrap uses M5 and checks source hashes against that archive.
+Bootstrap requires an argv {context_file} placeholder, validated for every case
+before any command runs. This proves a delivery route, not that an arbitrary
+command/model consumed it. Context metrics count generated source text, including
+zero for an empty bundle; reported model usage remains a separate measurement.
+Existing version-1 receipts remain readable; older receipts do not retroactively
+prove delivery.
 Suite hashes, source archive hashes, case identity and declared agent/model labels
 preserve comparison boundaries; duplicate receipts are rejected. Results store
 exit/timeout, elapsed seconds, output sizes/hashes, predicate success, context
@@ -343,8 +362,11 @@ A packaged versioned corpus supplies two deterministic failure scenarios (retry
 idempotence and stale cache), learner fixtures, instructions and acceptance
 checks. Explicit list/start/check/progress commands use local .architect/labs
 sessions. Each session copies its checker and records its SHA-256; modifications
-are rejected. Checks execute temporary snapshots of learner files with the M6
-POSIX subprocess timeout helper. They do not invoke native agents. Hidden checks
+are rejected. Retry corpus revision 2 adds changed-payload retries and interleaved
+caller states. Schema version stays 1; existing sessions retain their own checker
+and historical outcomes. New sessions use the revised corpus. Checks execute
+temporary snapshots of learner files with the M6 POSIX subprocess timeout helper.
+They do not invoke native agents. Hidden checks
 are outside the learner workspace, not adversarial secrets.
 
 Atomic JSON attempt receipts contain scenario/check/input hashes and observed
