@@ -151,3 +151,70 @@ def test_day_boundaries_and_events_share_a_snapshot(repo, monkeypatch):
     after = service.day(repo, '2026-01-02')['work'][0]
     assert [item['event_id'] for item in after['observations']] == writes
     assert set(after['boundaries_on_day']) == {'began_at', 'ended_at'}
+
+
+WRONG_RETRY = [
+    '''def credit(state, request_id, amount):
+    seen = state.setdefault('seen', set())
+    identity = (request_id, amount)
+    if identity not in seen:
+        state['balance'] = state.get('balance', 0) + amount
+        seen.add(identity)
+    return state.get('balance', 0)
+''',
+    '''seen = set()
+def credit(state, request_id, amount):
+    global seen
+    if not state:
+        seen = set()
+        state['balance'] = 0
+    if request_id not in seen:
+        state['balance'] += amount
+        seen.add(request_id)
+    return state['balance']
+''',
+]
+
+
+@pytest.mark.parametrize('solution', WRONG_RETRY)
+def test_retry_checker_rejects_plausible_wrong_repairs(tmp_path, solution):
+    labs = Labs(tmp_path)
+    session = labs.start('retry')
+    workspace = Path(session['workspace'])
+    (workspace / 'ledger.py').write_text(solution)
+    assert labs.check(session['lab_id'])['passed'] is False
+    (workspace / 'ledger.py').write_text(REPAIRS['retry'][1])
+    assert labs.check(session['lab_id'])['passed'] is True
+
+
+def test_new_retry_revision_preserves_existing_pinned_sessions(tmp_path, monkeypatch):
+    import architect.labs as module
+    legacy = tmp_path / 'legacy-corpus'
+    shutil.copytree(module.CORPUS, legacy)
+    spec_path = legacy / 'retry/scenario.json'
+    spec = json.loads(spec_path.read_text())
+    spec.pop('revision', None)
+    spec_path.write_text(json.dumps(spec))
+    old_check = '''import sys
+sys.path.insert(0, sys.argv[1])
+from ledger import credit
+state = {}
+assert credit(state, "a", 7) == 7
+assert credit(state, "a", 7) == 7
+assert credit(state, "b", 3) == 10
+assert credit(state, "a", 7) == 10
+assert credit({}, "a", 2) == 2
+'''
+    (legacy / 'retry/evaluator.py').write_text(old_check)
+    labs = Labs(tmp_path / 'project')
+    with monkeypatch.context() as patch:
+        patch.setattr(module, 'CORPUS', legacy)
+        old = labs.start('retry')
+    new = labs.start('retry')
+    assert new['scenario']['revision'] == 2
+    assert new['check_sha256'] != old['check_sha256']
+    for session in (old, new):
+        (Path(session['workspace']) / 'ledger.py').write_text(WRONG_RETRY[0])
+    assert labs.check(old['lab_id'])['passed'] is True  # Historical evaluator is retained.
+    assert labs.check(new['lab_id'])['passed'] is False
+    assert labs.progress(old['lab_id'])['check_matches_pinned'] is True
