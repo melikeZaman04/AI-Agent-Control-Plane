@@ -27,6 +27,13 @@ def _events(connection, run_id):
     return normalized_timeline(rows, run_id=run_id)
 
 
+def _observation(event):
+    return {name: getattr(event, name) for name in (
+        'event_id', 'timestamp', 'event_type', 'status', 'provider',
+        'fidelity', 'tool', 'target',
+    )}
+
+
 @dataclass(frozen=True)
 class ObservationFact:
     """Count of observations sharing normalized type, status and provenance.
@@ -180,12 +187,7 @@ class ProjectChronicle:
                                                and event.status == 'failed'
                                                and event.metadata.get('run_status') == 'FAILED'],
                     })
-                def observation(event):
-                    return {name: getattr(event, name) for name in (
-                        'event_id', 'timestamp', 'event_type', 'status', 'provider',
-                        'fidelity', 'tool', 'target',
-                    )}
-                failures.extend({'kind': 'event_failure', **observation(event)} for event in events
+                failures.extend({'kind': 'event_failure', **_observation(event)} for event in events
                                 if event.event_type == 'error' or (
                                     event.event_type in ('tool_execution', 'test_execution')
                                     and event.status == 'failed'))
@@ -203,17 +205,40 @@ class ProjectChronicle:
                     'automated': automated,
                     'automation_evidence_event_ids': [event.event_id for event in declarations],
                     'evidence_event_ids': [event.event_id for event in events],
-                    'observations': [observation(event) for event in events],
-                    'file_changes': [observation(event) for event in events
+                    'observations': [_observation(event) for event in events],
+                    'file_changes': [_observation(event) for event in events
                                      if event.event_type == 'file_changed' and event.target is not None
                                      and event.status in (None, 'success')],
-                    'tests': [observation(event) for event in events if event.event_type == 'test_execution'],
+                    'tests': [_observation(event) for event in events if event.event_type == 'test_execution'],
                     'failures': failures,
                 })
         receipts.sort(key=lambda receipt: (
             receipt['began_at'] is None, receipt['began_at'] or '', receipt['run_id'],
         ))
         return receipts
+
+    def occurrences(self, project_id: int) -> list[dict]:
+        """All recorded run boundaries and observations from one read snapshot.
+
+        Unlike work receipts, an eventless registration still has a boundary.
+        Its empty observation list does not assert that work occurred.
+        """
+        with closing(sqlite3.connect(self.database.as_uri() + '?mode=ro', uri=True)) as connection:
+            connection.row_factory = sqlite3.Row
+            connection.execute('BEGIN')
+            _project(connection, project_id)
+            runs = connection.execute('SELECT run_id, started_at, ended_at FROM runs').fetchall()
+            records = [{
+                'run_id': run['run_id'],
+                'run_source': {'table': 'runs', 'run_id': run['run_id']},
+                'began_at': _run_timestamp(run['started_at']),
+                'ended_at': _run_timestamp(run['ended_at']),
+                'observations': [_observation(event) for event in _events(connection, run['run_id'])],
+            } for run in runs]
+        records.sort(key=lambda record: (
+            record['began_at'] is None, record['began_at'] or '', record['run_id'],
+        ))
+        return records
 
     def failures(self, project_id: int, *, run_id: str | None = None) -> list[dict]:
         """Explicit run and event failures, ordered by time, run and source ID."""

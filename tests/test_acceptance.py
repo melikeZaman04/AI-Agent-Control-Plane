@@ -99,3 +99,55 @@ def test_missing_field_in_legacy_imported_normalized_envelope(recorded):
     log_event(run, 'TOOL_CALL', payload=payload, db_path=database)
     with pytest.raises(ValueError):
         recorder.timeline(run)
+
+
+@pytest.mark.parametrize('zone,day,expected', [
+    ('UTC', '2026-01-02', ['running', 'terminal']),
+    ('America/New_York', '2026-01-01', ['running', 'terminal']),
+    ('UTC', '2026-01-01', []),
+])
+def test_day_includes_eventless_boundaries_without_inventing_work(repo, zone, day, expected):
+    db = repo / '.architect/architect.db'
+    pid = ensure_project(repo)
+    for run, status in [('running', 'RUNNING'), ('pending', 'PENDING'), ('terminal', 'FAILED')]:
+        create_run('fixture', 'PASSIVE', run, run_id=run, status=status, db_path=db)
+    with sqlite3.connect(db) as connection:
+        connection.execute("UPDATE runs SET started_at='2026-01-02 00:30:00' WHERE status!='PENDING'")
+        connection.execute("UPDATE runs SET ended_at='2026-01-02 01:00:00' WHERE status='FAILED'")
+    service = SessionIntelligence(db, pid)
+    report = service.day(repo, day, timezone=zone)
+    assert [item['run_id'] for item in report['work']] == expected
+    assert all(item['observations'] == [] for item in report['work'])
+    assert all(item['boundaries_on_day'] for item in report['work'])
+    # M3 receipts retain their stricter work qualification.
+    assert [r['run_id'] for r in ProjectChronicle(db).receipts(pid)] == ['terminal']
+    assert service.day(repo, day, timezone=zone) == report
+
+
+def test_day_boundaries_and_events_share_a_snapshot(repo, monkeypatch):
+    import architect.chronicle as module
+    db = repo / '.architect/architect.db'
+    pid = ensure_project(repo)
+    run = create_run('fixture', 'PASSIVE', 'snapshot', db_path=db)
+    with sqlite3.connect(db) as connection:
+        connection.execute("UPDATE runs SET started_at='2026-01-02 00:30:00'")
+    recorder = FlightRecorder(db)
+    original = module._project
+    writes = []
+
+    def concurrent_finish(connection, project_id):
+        project = original(connection, project_id)  # Establish the read snapshot.
+        if not writes:
+            writes.append(recorder.record(ArchitectEvent(
+                run, 'run_finished', timestamp='2026-01-02T01:00:00Z',
+                status='failed', metadata={'run_status': 'FAILED'})))
+        return project
+
+    monkeypatch.setattr(module, '_project', concurrent_finish)
+    service = SessionIntelligence(db, pid)
+    before = service.day(repo, '2026-01-02')['work'][0]
+    assert before['observations'] == []
+    assert set(before['boundaries_on_day']) == {'began_at'}
+    after = service.day(repo, '2026-01-02')['work'][0]
+    assert [item['event_id'] for item in after['observations']] == writes
+    assert set(after['boundaries_on_day']) == {'began_at', 'ended_at'}

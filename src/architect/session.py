@@ -76,7 +76,7 @@ class SessionIntelligence:
         def on_day(timestamp):
             return timestamp is not None and datetime.fromisoformat(timestamp).astimezone(zone).date() == selected
         work = []
-        for receipt in self.chronicle.receipts(self.project_id):
+        for receipt in self.chronicle.occurrences(self.project_id):
             observations = [item for item in receipt['observations'] if on_day(item['timestamp'])]
             boundaries = {key: receipt[key] for key in ('began_at', 'ended_at') if on_day(receipt[key])}
             if observations or boundaries:
@@ -85,4 +85,4 @@ class SessionIntelligence:
         commits = [record for record in GitHistory(project_root).changes(revision) if on_day(record['timestamp'])]
         return {'report': 'day', 'date': day, 'timezone': timezone, 'project_id': self.project_id,
                 'work': work, 'commits': commits,
-                'scope': 'observed event and receipt-boundary occurrences; independent Git/SQLite snapshots'}
+                'scope': 'observed events and recorded run boundaries; independent Git/SQLite snapshots'}
