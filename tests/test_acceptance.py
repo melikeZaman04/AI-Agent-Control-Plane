@@ -218,3 +218,45 @@ assert credit({}, "a", 2) == 2
     assert labs.check(old['lab_id'])['passed'] is True  # Historical evaluator is retained.
     assert labs.check(new['lab_id'])['passed'] is False
     assert labs.progress(old['lab_id'])['check_matches_pinned'] is True
+
+
+def test_bootstrap_delivery_required_before_any_case_executes(repo):
+    (repo / 'source.py').write_text('pass\n')
+    commit(repo)
+    marker = repo / 'SHOULD_NOT_EXIST'
+    cases = [
+        {'id': 'first', 'agent': 'fixture', 'model': 'python',
+         'argv': [sys.executable, '-c', f'from pathlib import Path; Path({str(marker)!r}).touch()']},
+        {'id': 'bad', 'agent': 'fixture', 'model': 'python',
+         'argv': [sys.executable, '-c', 'print("OK")'], 'context': {'strategy': 'bootstrap'}},
+    ]
+    path = repo / 'suite.json'
+    path.write_text(json.dumps({'version': 1, 'cases': cases}))
+    with pytest.raises(ValueError, match='context_file'):
+        run_suite(repo, path)
+    assert not marker.exists()
+    assert not (repo / '.architect/benchmarks').exists()
+
+
+@pytest.mark.parametrize('strategy,budget,nonempty', [('none', 100, False), ('bootstrap', 100, True),
+                                                    ('bootstrap', 1, False)])
+def test_actual_context_bytes_reach_subprocess(repo, strategy, budget, nonempty):
+    (repo / 'AGENTS.md').write_text('Read the source.\n')
+    commit(repo)
+    script = '''import hashlib,json,sys
+raw = open(sys.argv[1], 'rb').read()
+bundle = json.loads(raw)
+assert bool(bundle['snippets']) == (sys.argv[2] == 'yes')
+print(hashlib.sha256(raw).hexdigest(), end='')
+'''
+    path = repo / 'suite.json'
+    path.write_text(json.dumps({'version': 1, 'cases': [{
+        'id': 'delivery', 'agent': 'fixture', 'model': 'python',
+        'argv': [sys.executable, '-c', script, '{context_file}', 'yes' if nonempty else 'no'],
+        'context': {'strategy': strategy, 'max_chars': budget},
+    }]}))
+    result = run_suite(repo, path)['results'][0]
+    assert result['passed']
+    assert result['stdout_sha256'] == sha256(result['context_sha256'].encode()).hexdigest()
+    assert bool(result['context_characters']) == nonempty
+    assert result['usage'] is None

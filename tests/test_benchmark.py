@@ -32,11 +32,13 @@ def source(repo):
 
 def test_repeatable_isolated_runs_context_usage_and_receipt_privacy(source):
     script='''from pathlib import Path
-import json
+import json, sys
+bundle = json.load(open(sys.argv[1]))
+assert bundle['snippets']
 assert not Path("mutation").exists()
 Path("mutation").write_text("trial")
 print(json.dumps({"result":"OK PRIVATE", "usage":{"input_tokens":11,"output_tokens":3}}))'''
-    path=suite_file(source,[case(argv=[sys.executable,'-c',script],repeats=2,
+    path=suite_file(source,[case(argv=[sys.executable,'-c',script,'{context_file}'],repeats=2,
                                  context={'strategy':'bootstrap','query':'fixture'})])
     report=run_suite(source,path)
     assert all(r['passed'] for r in report['results'])
@@ -85,7 +87,10 @@ def test_dirty_sources_rejected_and_context_file_placeholder(source):
 
 def test_models_strategies_are_separate_comparison_groups(source):
     report=run_suite(source,suite_file(source,[case(id='a',model='model-a'),
-        case(id='b',model='model-b',context={'strategy':'bootstrap','query':'fixture'})]))
+        case(id='b',model='model-b',context={'strategy':'bootstrap','query':'fixture'},
+             argv=[sys.executable,'-c',
+                   'import json,sys; assert json.load(open(sys.argv[1]))["snippets"]; print("OK")',
+                   '{context_file}'])]))
     result=compare([report])
     assert {(r['model'],r['context_strategy']) for r in result}=={('model-a','none'),('model-b','bootstrap')}
     assert all(r['usage_reported_trials']==0 and r['mean_reported_input_tokens'] is None for r in result)

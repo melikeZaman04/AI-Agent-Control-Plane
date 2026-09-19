@@ -57,6 +57,8 @@ def validate_suite(suite):
         context=case.get('context',{})
         if not isinstance(context,dict) or context.get('strategy','none') not in ('none','bootstrap'):
             raise ValueError('Unknown context strategy')
+        if context.get('strategy', 'none') == 'bootstrap' and not any('{context_file}' in arg for arg in argv):
+            raise ValueError('bootstrap requires {context_file} in argv to pass the context bundle')
         if not isinstance(context.get('query',''),str) or type(context.get('max_chars',12000)) is not int or context.get('max_chars',12000)<1:
             raise ValueError('Invalid context settings')
     return cases
