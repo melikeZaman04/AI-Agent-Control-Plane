@@ -21,9 +21,10 @@ A3 Roadmap Autonomy kapsamında M4–M7 uygulandı ve her parent milestone için
 checkpoint oluşturuldu. A4 kapalı; yeni ürün kapsamına otomatik geçilmez.
 M2.4 Passive Observer, opsiyonel NotebookLM ve handoff ertelenmiş durumda.
 Ürün kabulünde çözülmemiş Human Decision Gate yok. `rc1-acceptance-repair`
-geliştirme dalı GitHub'da `d8ce17e` commit'inde. M5 kabul kanıtları yerel commit'te;
-otomatik onay incelemesi ham Codex yanıtları/telemetrisinin herkese açık GitHub'a
-gönderilmesini reddetti. PR, merge veya deploy yapılmadı.
+geliştirme dalı GitHub'da. Otomatik onay incelemesi ham M5 Codex yanıtları ve
+telemetrisinin ilk yayın girişimini reddetti; kullanıcı bu kanıtların public dala
+gönderilmesini ayrıca açıkça yetkilendirdi ve kanıtlar daha sonra gönderildi.
+PR, merge veya deploy yapılmadı.
 
 | Kilometre taşı | Durum | Kabul kanıtı |
 |---|---|---|
