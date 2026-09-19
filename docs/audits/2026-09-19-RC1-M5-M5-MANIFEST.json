@@ -1,0 +1,238 @@
+{
+  "condition": "M5",
+  "exact_git_commit": "d8ce17edc4a3f2f8a35d79a2ecd7c8576400f998",
+  "repository_root": "/tmp/architect-rc1-m5-source",
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "start_line": 1,
+      "end_line": 66,
+      "utf8_bytes": 2645,
+      "source_characters": 2633,
+      "file_sha256": "4c43cd6c6498d1759bc6042b825393ae69e6c240ca1e2b535d41dbc76cb0d79e",
+      "range_sha256": "4c43cd6c6498d1759bc6042b825393ae69e6c240ca1e2b535d41dbc76cb0d79e"
+    },
+    {
+      "path": "docs/STATUS.md",
+      "start_line": 1,
+      "end_line": 46,
+      "utf8_bytes": 2752,
+      "source_characters": 2573,
+      "file_sha256": "308452e8750a096bc0a1aa93d7c10ecae0f40227b971fd70bc94d59b66606ef5",
+      "range_sha256": "308452e8750a096bc0a1aa93d7c10ecae0f40227b971fd70bc94d59b66606ef5"
+    },
+    {
+      "path": "docs/PRODUCT.md",
+      "start_line": 1,
+      "end_line": 29,
+      "utf8_bytes": 1391,
+      "source_characters": 1385,
+      "file_sha256": "acf965073e0077103b10309e326bf4bd9821b79622e238e41bc4ad80b9630f94",
+      "range_sha256": "acf965073e0077103b10309e326bf4bd9821b79622e238e41bc4ad80b9630f94"
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "start_line": 1,
+      "end_line": 35,
+      "utf8_bytes": 2640,
+      "source_characters": 2622,
+      "file_sha256": "d36fc2705bd464fed393fdab33b0adc4f82c4e6d73e55635f7cf7b374cd75a06",
+      "range_sha256": "0fc43fc1ab69b48907a2fdbe334da82e6c386b8ae3e010de343f835d65da3f69"
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "start_line": 118,
+      "end_line": 188,
+      "utf8_bytes": 4423,
+      "source_characters": 4407,
+      "file_sha256": "d36fc2705bd464fed393fdab33b0adc4f82c4e6d73e55635f7cf7b374cd75a06",
+      "range_sha256": "d812343c9a76f9d7db5a4601d4c3382e24be68dbd04a8380bd75f97c7ac9bdb7"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "start_line": 26,
+      "end_line": 60,
+      "utf8_bytes": 1885,
+      "source_characters": 1885,
+      "file_sha256": "58e88711994c8ec7bc6ec8fa36dead211c5cc52f8eafa639e5e303a9d72e1ed7",
+      "range_sha256": "f3eeba2aedfcdc8be9147af61238dcf59a85204b1f7dea6d41900a616a32eebb"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "start_line": 73,
+      "end_line": 102,
+      "utf8_bytes": 1773,
+      "source_characters": 1767,
+      "file_sha256": "58e88711994c8ec7bc6ec8fa36dead211c5cc52f8eafa639e5e303a9d72e1ed7",
+      "range_sha256": "0b769c79f78e7b4e49055604c3d288468c2d59ca1444446dd6349a1e99b1310f"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "start_line": 285,
+      "end_line": 332,
+      "utf8_bytes": 2504,
+      "source_characters": 2500,
+      "file_sha256": "58e88711994c8ec7bc6ec8fa36dead211c5cc52f8eafa639e5e303a9d72e1ed7",
+      "range_sha256": "05932569060a864f06b5aa99e74ecfcfaf41679b35ddd4bd7785ff547ef34359"
+    },
+    {
+      "path": "docs/EXECUTION_PROTOCOL.md",
+      "start_line": 7,
+      "end_line": 31,
+      "utf8_bytes": 1441,
+      "source_characters": 1425,
+      "file_sha256": "4dc877a5f626e0508d552e4e20b508425512c52db09cd4bd27a2b8e4068948b7",
+      "range_sha256": "428ec9e2dc8d2575334e9974a87d8a29224cbc8f475a5a383eb72d1eb704b699"
+    },
+    {
+      "path": "docs/EXECUTION_PROTOCOL.md",
+      "start_line": 99,
+      "end_line": 130,
+      "utf8_bytes": 2569,
+      "source_characters": 2551,
+      "file_sha256": "4dc877a5f626e0508d552e4e20b508425512c52db09cd4bd27a2b8e4068948b7",
+      "range_sha256": "b4b93f76ed2fd1bfd31033c76d1c606456325082d9762cfc4d41ec6fad541a49"
+    },
+    {
+      "path": "docs/EXECUTION_PROTOCOL.md",
+      "start_line": 147,
+      "end_line": 164,
+      "utf8_bytes": 804,
+      "source_characters": 798,
+      "file_sha256": "4dc877a5f626e0508d552e4e20b508425512c52db09cd4bd27a2b8e4068948b7",
+      "range_sha256": "aa7933d89da029b60e8c2ed0797f1a3481a9afbbb25c91b5218acf7c39fa8f09"
+    },
+    {
+      "path": "docs/audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md",
+      "start_line": 1,
+      "end_line": 5,
+      "utf8_bytes": 707,
+      "source_characters": 703,
+      "file_sha256": "4637e6e5da34b0b8f382fef32ccd7eb9ac5278712ad6b2bd618a97b4f4706c29",
+      "range_sha256": "824b0a120b8cc190162bb06350e48d378ae25b4b55146a23db118960c6ba9e59"
+    },
+    {
+      "path": "docs/audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md",
+      "start_line": 13,
+      "end_line": 22,
+      "utf8_bytes": 1405,
+      "source_characters": 1403,
+      "file_sha256": "4637e6e5da34b0b8f382fef32ccd7eb9ac5278712ad6b2bd618a97b4f4706c29",
+      "range_sha256": "aaa1876c53c376c346d97b1e2996c2911e4883802d5d30c7ccad95a2ff318e23"
+    },
+    {
+      "path": "docs/audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md",
+      "start_line": 48,
+      "end_line": 54,
+      "utf8_bytes": 1616,
+      "source_characters": 1608,
+      "file_sha256": "4637e6e5da34b0b8f382fef32ccd7eb9ac5278712ad6b2bd618a97b4f4706c29",
+      "range_sha256": "09d76bb99d80c7ded37ac7407fbe58b75470eebee9b8bf0e650874223b3f9489"
+    }
+  ],
+  "unique_source_files": 7,
+  "source_ranges_delivered": 14,
+  "total_utf8_bytes": 28555,
+  "total_source_characters": 28260,
+  "confirmed_no_secret_credential_private_key_or_env_material": true,
+  "confirmed_no_file_outside_architect_os_repository": true,
+  "secret_scan_methods": [
+    "private_key",
+    "provider_key",
+    "credential_assignment",
+    "bearer"
+  ],
+  "model": "gpt-5.6-sol",
+  "reasoning_effort": "high",
+  "provider": "authenticated Codex CLI",
+  "bootstrap": {
+    "query": "product",
+    "max_chars": 12000,
+    "metrics": {
+      "characters": 6591,
+      "max_characters": 12000,
+      "estimated_tokens": 1648,
+      "token_estimator": "ceil(characters/4); not model tokenization"
+    },
+    "omitted": [
+      {
+        "path": "docs/ROADMAP.md",
+        "reason": "character budget"
+      }
+    ]
+  },
+  "targeted_retrieval": [
+    {
+      "query": "roadmap",
+      "top_result": "docs/ROADMAP.md",
+      "top_score": 1,
+      "selected_ranges": [
+        [
+          1,
+          35
+        ],
+        [
+          118,
+          188
+        ]
+      ]
+    },
+    {
+      "query": "architecture",
+      "top_result": "docs/ARCHITECTURE.md",
+      "top_score": 1,
+      "selected_ranges": [
+        [
+          26,
+          60
+        ],
+        [
+          73,
+          102
+        ],
+        [
+          285,
+          332
+        ]
+      ]
+    },
+    {
+      "query": "execution_protocol",
+      "top_result": "docs/EXECUTION_PROTOCOL.md",
+      "top_score": 1,
+      "selected_ranges": [
+        [
+          7,
+          31
+        ],
+        [
+          99,
+          130
+        ],
+        [
+          147,
+          164
+        ]
+      ]
+    },
+    {
+      "query": "repair acceptance",
+      "top_result": "docs/audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md",
+      "top_score": 2,
+      "selected_ranges": [
+        [
+          1,
+          5
+        ],
+        [
+          13,
+          22
+        ],
+        [
+          48,
+          54
+        ]
+      ]
+    }
+  ]
+}

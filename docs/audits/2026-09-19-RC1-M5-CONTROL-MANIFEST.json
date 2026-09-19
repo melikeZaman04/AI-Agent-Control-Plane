@@ -1,0 +1,112 @@
+{
+  "condition": "CONTROL",
+  "exact_git_commit": "d8ce17edc4a3f2f8a35d79a2ecd7c8576400f998",
+  "repository_root": "/tmp/architect-rc1-m5-source",
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "start_line": 1,
+      "end_line": 66,
+      "utf8_bytes": 2645,
+      "source_characters": 2633,
+      "file_sha256": "4c43cd6c6498d1759bc6042b825393ae69e6c240ca1e2b535d41dbc76cb0d79e",
+      "range_sha256": "4c43cd6c6498d1759bc6042b825393ae69e6c240ca1e2b535d41dbc76cb0d79e"
+    },
+    {
+      "path": "docs/PRODUCT.md",
+      "start_line": 1,
+      "end_line": 29,
+      "utf8_bytes": 1391,
+      "source_characters": 1385,
+      "file_sha256": "acf965073e0077103b10309e326bf4bd9821b79622e238e41bc4ad80b9630f94",
+      "range_sha256": "acf965073e0077103b10309e326bf4bd9821b79622e238e41bc4ad80b9630f94"
+    },
+    {
+      "path": "docs/STATUS.md",
+      "start_line": 1,
+      "end_line": 46,
+      "utf8_bytes": 2752,
+      "source_characters": 2573,
+      "file_sha256": "308452e8750a096bc0a1aa93d7c10ecae0f40227b971fd70bc94d59b66606ef5",
+      "range_sha256": "308452e8750a096bc0a1aa93d7c10ecae0f40227b971fd70bc94d59b66606ef5"
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "start_line": 1,
+      "end_line": 188,
+      "utf8_bytes": 11353,
+      "source_characters": 11307,
+      "file_sha256": "d36fc2705bd464fed393fdab33b0adc4f82c4e6d73e55635f7cf7b374cd75a06",
+      "range_sha256": "d36fc2705bd464fed393fdab33b0adc4f82c4e6d73e55635f7cf7b374cd75a06"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "start_line": 1,
+      "end_line": 379,
+      "utf8_bytes": 23189,
+      "source_characters": 23169,
+      "file_sha256": "58e88711994c8ec7bc6ec8fa36dead211c5cc52f8eafa639e5e303a9d72e1ed7",
+      "range_sha256": "58e88711994c8ec7bc6ec8fa36dead211c5cc52f8eafa639e5e303a9d72e1ed7"
+    },
+    {
+      "path": "docs/EXECUTION_PROTOCOL.md",
+      "start_line": 1,
+      "end_line": 172,
+      "utf8_bytes": 10110,
+      "source_characters": 10040,
+      "file_sha256": "4dc877a5f626e0508d552e4e20b508425512c52db09cd4bd27a2b8e4068948b7",
+      "range_sha256": "4dc877a5f626e0508d552e4e20b508425512c52db09cd4bd27a2b8e4068948b7"
+    },
+    {
+      "path": "docs/GLOSSARY.md",
+      "start_line": 1,
+      "end_line": 169,
+      "utf8_bytes": 7536,
+      "source_characters": 7520,
+      "file_sha256": "69813b7886e247aec91e6998a40511fbfad3a5b82ec8e59ffb606678fcc7dbcd",
+      "range_sha256": "69813b7886e247aec91e6998a40511fbfad3a5b82ec8e59ffb606678fcc7dbcd"
+    },
+    {
+      "path": "docs/audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md",
+      "start_line": 1,
+      "end_line": 5,
+      "utf8_bytes": 707,
+      "source_characters": 703,
+      "file_sha256": "4637e6e5da34b0b8f382fef32ccd7eb9ac5278712ad6b2bd618a97b4f4706c29",
+      "range_sha256": "824b0a120b8cc190162bb06350e48d378ae25b4b55146a23db118960c6ba9e59"
+    },
+    {
+      "path": "docs/audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md",
+      "start_line": 13,
+      "end_line": 22,
+      "utf8_bytes": 1405,
+      "source_characters": 1403,
+      "file_sha256": "4637e6e5da34b0b8f382fef32ccd7eb9ac5278712ad6b2bd618a97b4f4706c29",
+      "range_sha256": "aaa1876c53c376c346d97b1e2996c2911e4883802d5d30c7ccad95a2ff318e23"
+    },
+    {
+      "path": "docs/audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md",
+      "start_line": 48,
+      "end_line": 54,
+      "utf8_bytes": 1616,
+      "source_characters": 1608,
+      "file_sha256": "4637e6e5da34b0b8f382fef32ccd7eb9ac5278712ad6b2bd618a97b4f4706c29",
+      "range_sha256": "09d76bb99d80c7ded37ac7407fbe58b75470eebee9b8bf0e650874223b3f9489"
+    }
+  ],
+  "unique_source_files": 8,
+  "source_ranges_delivered": 10,
+  "total_utf8_bytes": 62704,
+  "total_source_characters": 62341,
+  "confirmed_no_secret_credential_private_key_or_env_material": true,
+  "confirmed_no_file_outside_architect_os_repository": true,
+  "secret_scan_methods": [
+    "private_key",
+    "provider_key",
+    "credential_assignment",
+    "bearer"
+  ],
+  "model": "gpt-5.6-sol",
+  "reasoning_effort": "high",
+  "provider": "authenticated Codex CLI"
+}

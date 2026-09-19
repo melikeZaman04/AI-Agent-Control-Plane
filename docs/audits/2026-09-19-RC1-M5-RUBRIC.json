@@ -1,0 +1,14 @@
+{
+  "same_task_prompt": "Determine from the supplied Architect OS repository evidence at the specified commit:\n1. What is Architect OS?\n2. What is the current implementation / release state?\n3. What is the latest completed roadmap milestone?\n4. What major architecture boundaries must not be violated?\n5. What work is explicitly deferred?\n6. What should happen next according to the current project state?\n\nDo not modify anything. Answer all six questions, with repository file and line-range evidence for each factual claim. Distinguish implemented capabilities, product acceptance, and deferred work. If the supplied evidence does not establish a fact, say so. Use only the source blocks below. Do not open files or use tools; the working directory contains no repository content. Do not assume that a pre-experiment audit verdict has changed merely because this question is being asked.\n",
+  "expected": {
+    "1": "Local-first AI coding-agent control plane/project intelligence, observes rather than replaces agents; BUILD/LEARN/RESEARCH.",
+    "2": "M0-M7 implemented; RC1 repair branch A1-A6 fixed with 263 passing tests; pre-experiment product acceptance conditional pass pending M5 fresh-agent test; branch pushed; no full release/merge claim.",
+    "3": "M7 Learn/Labs is latest completed approved roadmap milestone; M2.4 deferred.",
+    "4": "Agents own conversations, native tools, permissions, sandboxes; Architect owns normalized evidence/history/context/benchmarks; observers isolate provider formats, recorder persists normalized events atomically; Git/source evidence ground truth; fidelity and unknowns preserved; A3 not A4; modes distinct.",
+    "5": "M2.4 passive observer, optional NotebookLM, handoff, A4/new roadmap; no background observation, scheduler, web UI, multi-agent runtime orchestration.",
+    "6": "At approved roadmap end seek human product review; complete M5 external fresh-agent acceptance check under explicit authorization; then update verdict/evidence; no new roadmap or automatic merge."
+  },
+  "material_omission_rule": "A missing roadmap endpoint, acceptance condition, agent/Architect ownership boundary, or deferred scope is material.",
+  "unsupported_claim_rule": "A material current-state assertion without correct supplied repository evidence is unsupported.",
+  "m5_pass_rule": "All six answers adequate, no material unsupported claim or context miss versus CONTROL, material source-byte reduction, measured actual provider tokens only if reported."
+}

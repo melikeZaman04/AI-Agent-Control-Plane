@@ -6,20 +6,22 @@
 ## Sonuç
 
 **Onaylı M0–M7 yol haritası tamamlandı. A1–A6 ayrı checkpoint'lerle işlendi;
-RC1 onarım dalı ürün kabul denetimi CONDITIONAL PASS verdi.**
+RC1 onarım dalı ürün kabul denetimi PASS verdi.**
 `17f8b61` HEAD'i için [RC1 kabul denetimi](audits/2026-09-19-RC1-HEAD-ACCEPTANCE.md)
 FAIL verdi: dört MAJOR, iki MINOR bulgu. Bu dal A1–A5 kaynak/test düzeltmelerini
 ve A6 belge uyumunu içerir. Tam regresyon **263 passed in 4.47s** (loopback dahil,
 A6 sonrası). [Onarım dalı RC1 denetimi](audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md)
-taze Claude/Codex kanıtını ve bağımsız probları kaydeder. M5 için depo belgelerinin
-dış Codex sağlayıcısına aktarılmasını gerektiren taze ajan doğruluk kontrolü,
-otomatik onay incelemesi izin vermediği için açık kalır. Testlerin geçmesi tek
-başına ürün kabulü değildir.
+taze Claude/Codex kanıtını, bağımsız probları ve `d8ce17e` üstünde iki bağımsız
+Codex oturumuyla tamamlanan M5 kabul karşılaştırmasını kaydeder. M5 aynı altı
+soruyu CONTROL ve Context Economy koşullarında 6/6 doğru yanıtladı; kaynak bağlamı
+62.704 bayttan 28.555 bayta indi. Bu kaynak yükü ölçümüdür; gerçek sağlayıcı
+giriş tokenları raporda ayrıca gösterilir. Testlerin geçmesi tek başına ürün
+kabulü değildir.
 A3 Roadmap Autonomy kapsamında M4–M7 uygulandı ve her parent milestone için yerel
 checkpoint oluşturuldu. A4 kapalı; yeni ürün kapsamına otomatik geçilmez.
 M2.4 Passive Observer, opsiyonel NotebookLM ve handoff ertelenmiş durumda.
-Çözülmemiş Human Decision Gate yok. Push koşulları doğrulanmadığından commit'ler
-yerel tutuldu; push/deploy yapılmadı.
+Çözülmemiş Human Decision Gate yok. `rc1-acceptance-repair` geliştirme dalı
+GitHub'a gönderildi; PR, merge veya deploy yapılmadı.
 
 | Kilometre taşı | Durum | Kabul kanıtı |
 |---|---|---|

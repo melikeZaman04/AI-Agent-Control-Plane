@@ -1,0 +1,10 @@
+{
+  "condition": "m5",
+  "returncode": 0,
+  "wall_seconds": 70.68349481100086,
+  "prompt_sha256": "f9840325fb6f91c8bdac1ef3f9f137477e962054d2ef9b23f49a08c638aaf248",
+  "response_exists": true,
+  "response_sha256": "723f9bcf5120b1024bed4f37b091ea5a6c505209fd2d9df76f01a405c666976a",
+  "jsonl_sha256": "0236f9f99bdcbc5ff51359732ec54e026c344ed1e654e10ea9c785ef50ff9b1d",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

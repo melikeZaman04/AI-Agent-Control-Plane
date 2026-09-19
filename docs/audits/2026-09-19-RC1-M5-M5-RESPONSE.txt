@@ -1,0 +1,92 @@
+## Evidence scope
+
+The supplied blocks describe the repository state at `d8ce17edc4a3f2f8a35d79a2ecd7c8576400f998`, but the cited acceptance audit explicitly audited `cbe034374683b65f995861695ea44b7ae6490849`. The blocks do not establish the ancestry or byte equivalence of those two commits. Therefore, the audit verdict remains relevant project evidence, but it does not prove that `d8ce17e` itself was audited. (`docs/audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md:1-5`)
+
+## 1. What is Architect OS?
+
+Architect OS is a **local-first AI Agent Control Plane**. Its purpose is to observe coding-agent runs, preserve project history and context, explain recorded changes, support resumption of interrupted work, and benchmark agents and context strategies. It sits above agents such as Codex and Claude Code rather than replacing them. (`AGENTS.md:3-8`)
+
+The broader product description calls it an **AI Agent Control Plane, Project Intelligence System, Context Economy Engine, and Agent Engineering Workbench**. Its four product pillars are:
+
+- Agent Flight Recorder
+- Project Chronicle
+- Context Economy
+- Engineering Workbench, with distinct BUILD, LEARN, and RESEARCH modes
+
+(`docs/PRODUCT.md:3-29`)
+
+## 2. What is the current implementation / release state?
+
+### Implemented capabilities
+
+The approved roadmap implementation is reported complete through **M7**. The component table records the CLI, local storage, Flight Recorder, live Claude and Codex observers, Chronicle, Session Intelligence, Context Economy, Benchmark, and LEARN Labs as implemented or complete. Passive observation and NotebookLM remain deferred. (`docs/ARCHITECTURE.md:317-332`)
+
+Specific implemented scope includes:
+
+- Live Claude ingestion through an explicit, project-local hook. (`docs/ROADMAP.md:25-26`, `docs/ROADMAP.md:32-34`)
+- Foreground, opt-in Codex OTLP/HTTP ingestion with explicit run correlation. (`docs/ROADMAP.md:27-30`)
+- Deterministic session status, changes, day, resume, and explain reports. (`docs/ROADMAP.md:118-130`)
+- Local Git-aware indexing, repo maps, targeted retrieval, bootstrap context, and context metrics. (`docs/ROADMAP.md:132-150`)
+- Local benchmark suites and receipts. (`docs/ROADMAP.md:152-169`)
+- Two controlled LEARN scenarios with isolated attempts and deterministic checks. (`docs/ROADMAP.md:171-188`)
+
+After the A1–A6 repair campaign, the recorded full regression was **263 tests passed in 4.47 seconds**, including the OTLP loopback tests. (`docs/audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md:13-22`)
+
+### Product acceptance
+
+Product acceptance is **CONDITIONAL PASS**, not unconditional acceptance. The remaining material gap is the external fresh-agent M5 correctness check: authorization to send repository documentation to Codex was rejected, so that check remains without current real-world evidence. (`docs/audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md:1-5`, `docs/audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md:52-54`)
+
+Passing tests alone is explicitly insufficient to establish product acceptance. (`docs/STATUS.md:7-15`)
+
+Because the audit names `cbe0343` as its audited source, the supplied evidence does **not** establish a separate acceptance verdict for the requested `d8ce17e` commit. No evidence says that merely reaching `d8ce17e` upgraded the verdict.
+
+### Release and delivery state
+
+The supplied sources conflict about Git delivery:
+
+- `docs/STATUS.md` says the commits were kept local and no push or deployment occurred. (`docs/STATUS.md:17-20`)
+- The repair audit says `rc1-acceptance-repair` was pushed and verified against the remote, but a PR could not be created or inspected because the GitHub CLI token was invalid. (`docs/audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md:48-50`)
+
+Consequently, the exact remote state cannot be resolved from these blocks. There is no evidence of a production deployment or formal release. The execution protocol says conflicting canonical evidence must not be silently resolved. (`docs/EXECUTION_PROTOCOL.md:99-118`)
+
+## 3. What is the latest completed roadmap milestone?
+
+The latest completed milestone is **M7 — Learn / Labs**. It supplies a versioned failure corpus, at least two controlled Python scenarios, deterministic checks outside learner workspaces, independent attempt tracking, and evidence-based progress reporting. (`docs/ROADMAP.md:171-188`)
+
+The roadmap declares completion through M7, with the approved A3 roadmap boundary exhausted. (`docs/ROADMAP.md:1-5`) The recorded historical M7 closing regression was **239 passed**, while later repairs raised the full regression to 263 passed. (`docs/STATUS.md:22-35`, `docs/audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md:20-22`)
+
+## 4. What major architecture boundaries must not be violated?
+
+1. **Agent versus Architect ownership:** Agents retain ownership of conversations, code generation, native tools, sandboxes, permissions, and provider session behavior. Architect owns normalized history, timelines, context audit, resume/explain reports, benchmarks, and project memory. (`docs/ARCHITECTURE.md:37-44`)
+
+2. **Normalized observer boundary:** Provider observers must translate provider evidence into normalized Architect events and persist through the Flight Recorder. Provider-specific formats must not leak into core storage. (`docs/ARCHITECTURE.md:46-60`)
+
+3. **Transport, mapping, and persistence separation:** For live Codex, the receiver owns transport and run correlation, the observer owns mapping and privacy filtering, and persistence remains through the Flight Recorder. The recorder and SQLite schema are not provider-specific. (`docs/ARCHITECTURE.md:82-95`)
+
+4. **Evidence fidelity:** Architect must never claim visibility beyond the evidence available at the active fidelity level. Session reports may not invent causes, recommendations, live state, or mastery. (`docs/ARCHITECTURE.md:97-102`, `docs/STATUS.md:39-46`)
+
+5. **Local, Git-grounded context:** Git remains the repository ground truth. Context indexing is limited to tracked content; the cache stores metadata rather than prompts or complete source bodies, and context savings must not reduce correctness. (`AGENTS.md:37-45`, `docs/ARCHITECTURE.md:285-310`, `docs/EXECUTION_PROTOCOL.md:147-164`)
+
+6. **No unapproved platform expansion:** The current boundary excludes unrelated milestones, global hooks, passive/background observation, scheduling, multi-agent runtime orchestration, and a web UI. BUILD, LEARN, and RESEARCH responsibilities should not be mixed without an explicit reason. (`AGENTS.md:10-15`, `AGENTS.md:23-35`)
+
+7. **No unilateral product-direction changes:** A3 permits executing the approved roadmap; A4 product autonomy is disabled. Changing durable architecture, ownership, core infrastructure, privacy behavior, or roadmap scope requires a human decision. (`docs/EXECUTION_PROTOCOL.md:7-31`, `docs/EXECUTION_PROTOCOL.md:99-116`)
+
+## 5. What work is explicitly deferred?
+
+The sources explicitly defer:
+
+- **M2.4 Passive Observer**, pending demonstrated need and human approval. (`docs/ROADMAP.md:30-34`)
+- **Optional NotebookLM and external knowledge retrieval.** (`docs/ROADMAP.md:132-150`)
+- **M4 handoff workflows and LLM-generated narrative.** (`docs/ROADMAP.md:118-121`)
+- **A4 product autonomy, Roadmap v2, and any new product scope.** (`AGENTS.md:17-20`, `docs/EXECUTION_PROTOCOL.md:14-23`)
+- **Agent runtime orchestration and stronger execution isolation.** (`docs/audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md:52-54`)
+
+Telemetry delivery guarantees and retry deduplication are documented as limitations, but the supplied blocks do not explicitly designate them as scheduled roadmap work. (`docs/audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md:52-52`)
+
+## 6. What should happen next?
+
+The required next project step is **human product review**. The approved A3 roadmap is exhausted, A4 is disabled, and no new milestone or product scope should begin automatically. (`AGENTS.md:17-20`, `docs/ROADMAP.md:1-5`, `docs/EXECUTION_PROTOCOL.md:18-31`)
+
+That review should consider the remaining M5 acceptance gap: whether and how to authorize a fresh external-agent correctness probe. Until that evidence exists, the documented product verdict remains **CONDITIONAL PASS**. (`docs/STATUS.md:7-16`, `docs/audits/2026-09-19-RC1-REPAIR-ACCEPTANCE.md:52-54`)
+
+The evidence does not establish an approved Roadmap v2, an unconditional product acceptance, or a production release.

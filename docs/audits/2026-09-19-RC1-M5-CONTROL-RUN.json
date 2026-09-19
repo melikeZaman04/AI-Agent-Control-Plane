@@ -1,0 +1,10 @@
+{
+  "condition": "control",
+  "returncode": 0,
+  "wall_seconds": 45.209034633000556,
+  "prompt_sha256": "2fb478a5a66603ac60dccc8f112e54a0051add9ee449599ad3fff3c752d32a8c",
+  "response_exists": true,
+  "response_sha256": "a5c8ff27a4f655b7430b02fa1c33b1d8bed3d6054bc9ee6f4fc4d3870ebfbb80",
+  "jsonl_sha256": "19379b8b13f6123149b920cfdb48a6c94b40c58bd3403e01a494b38c5e35e141",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
